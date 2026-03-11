@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
+import { useSiteContext } from '../context/SiteContext';
 
 export default function Contact() {
+  const { settings } = useSiteContext();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -67,17 +69,15 @@ export default function Contact() {
             <div>
               <h3 className="text-xs uppercase tracking-widest text-gray-400 mb-4 font-medium">Office</h3>
               <p className="text-lg font-medium">JOOARCHI</p>
-              <p className="text-gray-600 font-light mt-2">
-                Akersgata 12<br/>
-                0158 Oslo<br/>
-                Norway
+              <p className="text-gray-600 font-light mt-2 whitespace-pre-line">
+                {settings.contactAddress}
               </p>
             </div>
             
             <div>
               <h3 className="text-xs uppercase tracking-widest text-gray-400 mb-4 font-medium">Inquiries</h3>
-              <a href="mailto:contact@jooarchi.com" className="block text-lg font-medium hover:text-gray-600 transition-colors">contact@jooarchi.com</a>
-              <a href="tel:+4722334455" className="block text-gray-600 font-light mt-2 hover:text-black transition-colors">+47 22 33 44 55</a>
+              <a href={`mailto:${settings.contactEmail}`} className="block text-lg font-medium hover:text-gray-600 transition-colors">{settings.contactEmail}</a>
+              <a href={`tel:${settings.contactPhone.replace(/[^0-9+]/g, '')}`} className="block text-gray-600 font-light mt-2 hover:text-black transition-colors">{settings.contactPhone}</a>
             </div>
 
             <div>

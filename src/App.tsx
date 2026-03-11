@@ -12,6 +12,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
+import { SiteProvider } from './context/SiteContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -61,9 +62,10 @@ export default function App() {
   }, []);
 
   return (
-    <Router>
-      <ScrollToTop />
-      <div ref={containerRef} className="text-base sm:text-lg leading-relaxed font-sans bg-[var(--c-bg)] min-h-screen">
+    <SiteProvider>
+      <Router>
+        <ScrollToTop />
+        <div ref={containerRef} className="text-base sm:text-lg leading-relaxed font-sans bg-[var(--c-bg)] min-h-screen">
         {/* NOISE */}
         <div className="noise"></div>
 
@@ -101,5 +103,6 @@ export default function App() {
         <Footer />
       </div>
     </Router>
+    </SiteProvider>
   );
 }

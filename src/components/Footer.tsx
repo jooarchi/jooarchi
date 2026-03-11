@@ -1,6 +1,9 @@
 import React from 'react';
+import { useSiteContext } from '../context/SiteContext';
 
 export default function Footer() {
+  const { settings } = useSiteContext();
+
   return (
     <footer className="footer-sticky">
       <div className="absolute inset-0 z-0">
@@ -16,7 +19,7 @@ export default function Footer() {
           </span>
         </div>
 
-        <a href="mailto:hello@jooarchi.com" className="block group">
+        <a href={`mailto:${settings.contactEmail}`} className="block group">
           <h2 className="display-font text-[10vw] leading-[0.8] font-medium tracking-tighter text-white group-hover:text-gray-300 transition-colors duration-500">
             LET'S BUILD
           </h2>
@@ -32,16 +35,14 @@ export default function Footer() {
           </div>
           <div className="flex flex-col gap-4">
             <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Office</span>
-            <p className="text-sm text-gray-400">
-              Akersgata 12<br />
-              0158 Oslo<br />
-              Norway
+            <p className="text-sm text-gray-400 whitespace-pre-line">
+              {settings.contactAddress}
             </p>
           </div>
           <div className="flex flex-col gap-4">
             <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Contact</span>
-            <a href="mailto:hello@jooarchi.com" className="text-sm text-gray-400 hover:text-white transition-colors">hello@jooarchi.com</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">+47 22 33 44 55</a>
+            <a href={`mailto:${settings.contactEmail}`} className="text-sm text-gray-400 hover:text-white transition-colors">{settings.contactEmail}</a>
+            <a href={`tel:${settings.contactPhone.replace(/[^0-9+]/g, '')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{settings.contactPhone}</a>
           </div>
           <div className="flex flex-col justify-between">
             <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">© 2025</span>

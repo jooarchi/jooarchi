@@ -3,6 +3,7 @@ import { ArrowDown, ArrowRight, ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import { useSiteContext } from '../context/SiteContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,6 +21,9 @@ const SplitText = ({ children, className = '' }: { children: string, className?:
 };
 
 export default function Home() {
+  const { projects, settings } = useSiteContext();
+  const featuredProjects = projects.slice(0, 3); // Get first 3 projects
+
   useEffect(() => {
     function initAnimations() {
       const heroTl = gsap.timeline();
@@ -139,10 +143,7 @@ export default function Home() {
           <div className="lg:col-span-5 flex flex-col justify-between h-full pt-2">
             <div className="text-xl md:text-2xl font-light text-gray-600 leading-relaxed">
               <SplitText>
-                JOOARCHI Architectural Studio believes that the most profound
-                architecture is often the quietest. We strip away the unnecessary
-                to reveal the essential truth of a space, crafting environments
-                that breathe.
+                {settings.homeIntroText}
               </SplitText>
             </div>
 
@@ -186,111 +187,40 @@ export default function Home() {
         </div>
 
         <div className="stack-container px-4 md:px-0">
-          {/* Project 01 */}
-          <div className="card-item">
-            <Link to="/projects/1" className="card-inner block">
-              <div className="card-content">
-                <div className="w-full">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-mono text-gray-400">01 / 03</span>
-                    <span className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
-                      <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
-                    </span>
+          {featuredProjects.map((project, index) => (
+            <div className="card-item" key={project.id}>
+              <Link to={`/projects/${project.id}`} className="card-inner block">
+                <div className="card-content">
+                  <div className="w-full">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-sm font-mono text-gray-400">0{index + 1} / 0{featuredProjects.length}</span>
+                      <span className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
+                        <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
+                      </span>
+                    </div>
+                    <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
+                      {project.title}
+                    </h3>
+                    <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
+                      {project.location}
+                    </p>
                   </div>
-                  <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
-                    SILENT VILLA
-                  </h3>
-                  <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
-                    Kyoto, Japan
-                  </p>
-                </div>
-                <div className="space-y-6">
-                  <p className="text-base text-gray-600 leading-relaxed font-light">
-                    A minimalist concrete residence designed to capture the
-                    changing shadows of the surrounding bamboo forest. A study
-                    in negative space.
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">Residential</span>
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">2023</span>
-                  </div>
-                </div>
-              </div>
-              <div className="card-img-wrap">
-                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0dccab47-16b0-4716-9e1a-b97f124e3031_1600w.webp" className="card-img" alt="Silent Villa" />
-              </div>
-            </Link>
-          </div>
-
-          {/* Project 02 */}
-          <div className="card-item">
-            <Link to="/projects/2" className="card-inner block">
-              <div className="card-content">
-                <div className="w-full">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-mono text-gray-400">02 / 03</span>
-                    <span className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
-                      <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
-                    </span>
-                  </div>
-                  <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
-                    VERTICAL FARM
-                  </h3>
-                  <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
-                    Berlin, Germany
-                  </p>
-                </div>
-                <div className="space-y-6">
-                  <p className="text-base text-gray-600 leading-relaxed font-light">
-                    Adaptive reuse of a brutalist bunker into a sustainable
-                    vertical farm and communal living space.
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">Public</span>
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">2024</span>
+                  <div className="space-y-6">
+                    <p className="text-base text-gray-600 leading-relaxed font-light">
+                      {project.description || 'A stunning architectural project.'}
+                    </p>
+                    <div className="flex gap-2">
+                      <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">{project.category}</span>
+                      <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">{project.year}</span>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <div className="card-img-wrap">
-                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/952269bf-60f5-48dc-afce-13953bead1eb_1600w.webp" className="card-img" alt="Vertical Farm" />
-              </div>
-            </Link>
-          </div>
-
-          {/* Project 03 */}
-          <div className="card-item">
-            <Link to="/projects/3" className="card-inner block">
-              <div className="card-content">
-                <div className="w-full">
-                  <div className="flex justify-between items-start mb-2">
-                    <span className="text-sm font-mono text-gray-400">03 / 03</span>
-                    <span className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
-                      <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
-                    </span>
-                  </div>
-                  <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
-                    NORDIC CLIFF
-                  </h3>
-                  <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
-                    Reykjavik, Iceland
-                  </p>
+                <div className="card-img-wrap">
+                  <img src={project.image} className="card-img" alt={project.title} />
                 </div>
-                <div className="space-y-6">
-                  <p className="text-base text-gray-600 leading-relaxed font-light">
-                    A glass and steel structure cantilevered over the volcanic
-                    landscape. Blurring the line between shelter and exposure.
-                  </p>
-                  <div className="flex gap-2">
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">Concept</span>
-                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">2025</span>
-                  </div>
-                </div>
-              </div>
-              <div className="card-img-wrap">
-                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/aa5ed4de-1a7e-4bb7-b0ea-1a4c511663df_1600w.webp" className="card-img" alt="Nordic Cliff" />
-              </div>
-            </Link>
-          </div>
+              </Link>
+            </div>
+          ))}
         </div>
       </section>
 

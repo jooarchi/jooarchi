@@ -1,6 +1,9 @@
 import React from 'react';
+import { useSiteContext } from '../context/SiteContext';
 
 export default function About() {
+  const { settings } = useSiteContext();
+
   return (
     <div className="min-h-screen bg-[var(--c-bg)] pt-32">
       {/* Header */}
@@ -8,9 +11,8 @@ export default function About() {
         <h1 className="display-font text-5xl md:text-8xl font-medium tracking-tighter mb-8">
           ABOUT US
         </h1>
-        <p className="text-xl md:text-3xl font-light text-gray-600 max-w-4xl leading-relaxed">
-          JOOARCHI is an architectural practice focused on thoughtful and contextual design. 
-          We work across residential, commercial, and cultural projects.
+        <p className="text-xl md:text-3xl font-light text-gray-600 max-w-4xl leading-relaxed whitespace-pre-line">
+          {settings.aboutText}
         </p>
       </header>
 
