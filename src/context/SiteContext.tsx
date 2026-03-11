@@ -17,6 +17,9 @@ export interface SiteSettings {
   contactPhone: string;
   contactAddress: string;
   homeIntroText: string;
+  isUnderConstruction: boolean;
+  underConstructionImage: string;
+  underConstructionText: string;
 }
 
 interface SiteContextType {
@@ -96,7 +99,10 @@ const DEFAULT_SETTINGS: SiteSettings = {
   contactEmail: "studio@jooarchi.com",
   contactPhone: "+47 123 456 789",
   contactAddress: "Oslo, Norway / New York, USA",
-  homeIntroText: "JOOARCHI Architectural Studio believes that the most profound architecture is often the quietest. We strip away the unnecessary to reveal the essential truth of a space, crafting environments that breathe."
+  homeIntroText: "JOOARCHI Architectural Studio believes that the most profound architecture is often the quietest. We strip away the unnecessary to reveal the essential truth of a space, crafting environments that breathe.",
+  isUnderConstruction: true,
+  underConstructionImage: "/bg-image.jpg",
+  underConstructionText: "A space is waiting to be born"
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);

@@ -4,6 +4,10 @@ import { useSiteContext } from '../context/SiteContext';
 export default function Footer() {
   const { settings } = useSiteContext();
 
+  if (settings.isUnderConstruction) {
+    return null;
+  }
+
   return (
     <footer className="footer-sticky">
       <div className="absolute inset-0 z-0">

@@ -5,7 +5,7 @@ export default function Admin() {
   const [password, setPassword] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [error, setError] = useState('');
-  const [activeTab, setActiveTab] = useState<'projects' | 'settings'>('projects');
+  const [activeTab, setActiveTab] = useState<'projects' | 'settings' | 'mainpage'>('projects');
   
   const { projects, settings, updateProject, addProject, deleteProject, updateSettings } = useSiteContext();
 
@@ -44,6 +44,19 @@ export default function Admin() {
     }
   };
 
+  const handleSaveMainPage = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const settingsData: Partial<SiteSettings> = {
+      isUnderConstruction: formData.get('isUnderConstruction') === 'true',
+      underConstructionImage: formData.get('underConstructionImage') as string,
+      underConstructionText: formData.get('underConstructionText') as string,
+      homeIntroText: formData.get('homeIntroText') as string,
+    };
+    updateSettings(settingsData);
+    alert('Main Page settings saved successfully!');
+  };
+
   const handleSaveSettings = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -52,7 +65,6 @@ export default function Admin() {
       contactEmail: formData.get('contactEmail') as string,
       contactPhone: formData.get('contactPhone') as string,
       contactAddress: formData.get('contactAddress') as string,
-      homeIntroText: formData.get('homeIntroText') as string,
     };
     updateSettings(settingsData);
     alert('Settings saved successfully!');
@@ -97,6 +109,12 @@ export default function Admin() {
             className={`text-sm tracking-widest uppercase ${activeTab === 'projects' ? 'font-bold text-black' : 'text-gray-500'}`}
           >
             Projects
+          </button>
+          <button 
+            onClick={() => setActiveTab('mainpage')}
+            className={`text-sm tracking-widest uppercase ${activeTab === 'mainpage' ? 'font-bold text-black' : 'text-gray-500'}`}
+          >
+            Main Page
           </button>
           <button 
             onClick={() => setActiveTab('settings')}
@@ -155,14 +173,68 @@ export default function Admin() {
           </div>
         )}
 
+        {activeTab === 'mainpage' && (
+          <div className="bg-white p-8 rounded-lg border border-black/5">
+            <h2 className="text-xl font-medium mb-6">Main Page Settings</h2>
+            <form onSubmit={handleSaveMainPage} className="space-y-6">
+              <div>
+                <label className="block text-sm font-medium mb-2">Display Mode</label>
+                <select 
+                  name="isUnderConstruction" 
+                  defaultValue={settings.isUnderConstruction ? 'true' : 'false'}
+                  className="w-full p-3 border rounded focus:outline-none focus:border-black"
+                >
+                  <option value="true">Under Construction (Image + Text only)</option>
+                  <option value="false">Full Website (Projects, About, Contact)</option>
+                </select>
+                <p className="text-xs text-gray-500 mt-2">Choose whether to show the full website or a simple "Under Construction" page.</p>
+              </div>
+              
+              <div className="pt-6 border-t border-gray-100">
+                <h3 className="font-medium mb-4">Under Construction Settings</h3>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Background Image URL</label>
+                    <input 
+                      name="underConstructionImage" 
+                      type="text" 
+                      defaultValue={settings.underConstructionImage} 
+                      placeholder="/bg-image.jpg or https://..."
+                      className="w-full p-3 border rounded focus:outline-none focus:border-black" 
+                    />
+                    <p className="text-xs text-gray-500 mt-2">Enter the path to the image (e.g., /bg-image.jpg if uploaded to public folder).</p>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Main Text</label>
+                    <input 
+                      name="underConstructionText" 
+                      type="text" 
+                      defaultValue={settings.underConstructionText} 
+                      className="w-full p-3 border rounded focus:outline-none focus:border-black" 
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-6 border-t border-gray-100">
+                <h3 className="font-medium mb-4">Full Website Settings</h3>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Home Intro Text</label>
+                  <textarea name="homeIntroText" defaultValue={settings.homeIntroText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                </div>
+              </div>
+
+              <button type="submit" className="bg-black text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors mt-6">
+                Save Main Page Settings
+              </button>
+            </form>
+          </div>
+        )}
+
         {activeTab === 'settings' && (
           <div className="bg-white p-8 rounded-lg border border-black/5">
             <h2 className="text-xl font-medium mb-6">Site Settings</h2>
             <form onSubmit={handleSaveSettings} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Home Intro Text</label>
-                <textarea name="homeIntroText" defaultValue={settings.homeIntroText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
-              </div>
               <div>
                 <label className="block text-sm font-medium mb-2">About Text</label>
                 <textarea name="aboutText" defaultValue={settings.aboutText} rows={5} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>

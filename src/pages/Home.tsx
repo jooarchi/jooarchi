@@ -24,7 +24,11 @@ export default function Home() {
   const { projects, settings } = useSiteContext();
   const featuredProjects = projects.slice(0, 3); // Get first 3 projects
 
+  const isUnderConstruction = settings.isUnderConstruction;
+
   useEffect(() => {
+    if (isUnderConstruction) return;
+
     function initAnimations() {
       const heroTl = gsap.timeline();
       heroTl.to('.hero-title-wrap span', {
@@ -96,7 +100,28 @@ export default function Home() {
     return () => {
       ScrollTrigger.getAll().forEach(t => t.kill());
     };
-  }, []);
+  }, [isUnderConstruction]);
+
+  if (isUnderConstruction) {
+    return (
+      <div className="min-h-screen bg-[var(--c-bg)] flex flex-col items-center justify-center p-6 md:p-12">
+        <div className="w-full max-w-5xl flex flex-col items-center justify-center animate-fade-in">
+          <img 
+            src={settings.underConstructionImage || "/bg-image.jpg"} 
+            alt={settings.underConstructionText || "A space is waiting to be born"} 
+            className="w-full max-w-full h-auto max-h-[75vh] object-contain mb-10 md:mb-16"
+            onError={(e) => {
+              // Fallback if the user hasn't uploaded the image yet
+              e.currentTarget.src = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop";
+            }}
+          />
+          <h1 className="display-font text-lg md:text-2xl lg:text-3xl font-light tracking-[0.3em] uppercase text-center text-[#1a1a1a] opacity-80 mt-4">
+            {settings.underConstructionText || "A space is waiting to be born"}
+          </h1>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[var(--c-bg)]">
