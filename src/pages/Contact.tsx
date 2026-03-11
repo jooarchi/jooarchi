@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { ArrowRight } from 'lucide-react';
 
 export default function Contact() {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -16,13 +17,36 @@ export default function Contact() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    // Simulate form submission
-    alert('Thank you for your inquiry. We will get back to you shortly.');
-    setFormData({
-      name: '', email: '', phone: '', projectType: '', location: '', budget: '', message: ''
-    });
+    setIsSubmitting(true);
+
+    const form = e.currentTarget;
+    const data = new FormData(form);
+
+    try {
+      const response = await fetch('https://formspree.io/f/xjgawakz', {
+        method: 'POST',
+        body: data,
+        headers: {
+          'Accept': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        alert('Thank you for your inquiry. We will get back to you shortly.');
+        setFormData({
+          name: '', email: '', phone: '', projectType: '', location: '', budget: '', message: ''
+        });
+        form.reset();
+      } else {
+        alert('Oops! There was a problem submitting your form.');
+      }
+    } catch (error) {
+      alert('Oops! There was a problem submitting your form.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -185,9 +209,9 @@ export default function Contact() {
               />
             </div>
 
-            <button type="submit" className="group flex items-center gap-4 bg-black text-white px-8 py-4 rounded-full text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors w-full md:w-auto justify-center">
-              Send Inquiry
-              <ArrowRight strokeWidth={1.5} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            <button type="submit" disabled={isSubmitting} className="group flex items-center gap-4 bg-black text-white px-8 py-4 rounded-full text-sm uppercase tracking-widest hover:bg-gray-800 transition-colors w-full md:w-auto justify-center disabled:opacity-70">
+              {isSubmitting ? 'Sending...' : 'Send Inquiry'}
+              {!isSubmitting && <ArrowRight strokeWidth={1.5} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />}
             </button>
           </form>
         </div>
