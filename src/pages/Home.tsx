@@ -1,0 +1,311 @@
+import React, { useEffect } from 'react';
+import { ArrowDown, ArrowRight, ArrowUpRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
+
+const SplitText = ({ children, className = '' }: { children: string, className?: string }) => {
+  const words = children.split(' ');
+  return (
+    <span className={`split-animate ${className}`}>
+      {words.map((word, i) => (
+        <span key={i} className="word-wrap">
+          <span className="word-inner">{word}&nbsp;</span>
+        </span>
+      ))}
+    </span>
+  );
+};
+
+export default function Home() {
+  useEffect(() => {
+    function initAnimations() {
+      const heroTl = gsap.timeline();
+      heroTl.to('.hero-title-wrap span', {
+        y: 0,
+        stagger: 0.1,
+        duration: 1.4,
+        ease: 'power3.out'
+      })
+      .to('.hero-line', {
+        scaleX: 1,
+        opacity: 1,
+        duration: 1,
+        ease: 'expo.out'
+      }, "-=1")
+      .to('.hero-fade', { opacity: 1, duration: 1 }, "-=0.5");
+
+      gsap.to('.hero-img', {
+        yPercent: 20,
+        scale: 1.1,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero-img-wrap',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+
+      document.querySelectorAll('.split-animate').forEach(el => {
+        const words = el.querySelectorAll('.word-inner');
+        gsap.to(words, {
+          y: "0%",
+          duration: 0.8,
+          ease: "power2.out",
+          stagger: 0.015,
+          scrollTrigger: {
+            trigger: el,
+            start: "top 85%",
+          }
+        });
+      });
+
+      const cards = gsap.utils.toArray('.card-item') as HTMLElement[];
+      cards.forEach((card, i) => {
+        const inner = card.querySelector('.card-inner');
+        const nextCard = cards[i+1];
+
+        if (nextCard) {
+          gsap.to(inner, {
+            scale: 0.92,
+            y: -30,
+            opacity: 0.6,
+            filter: 'blur(2px)',
+            ease: "none",
+            scrollTrigger: {
+              trigger: nextCard,
+              start: "top bottom",
+              end: "top 10vh",
+              scrub: true
+            }
+          });
+        }
+      });
+    }
+
+    // Small delay to ensure DOM is ready
+    setTimeout(initAnimations, 100);
+
+    return () => {
+      ScrollTrigger.getAll().forEach(t => t.kill());
+    };
+  }, []);
+
+  return (
+    <div className="bg-[var(--c-bg)]">
+      {/* HERO */}
+      <section className="h-screen relative flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 w-full h-full hero-img-wrap">
+          <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/482e7b6a-168c-4d0d-b35d-0e2ff4014577_3840w.webp" className="w-full h-[120%] object-cover brightness-[0.6] hero-img" alt="Hero Architecture" />
+        </div>
+
+        <div className="relative z-10 text-center text-white mix-blend-exclusion px-4">
+          <h1 className="display-font text-[13vw] leading-[0.85] tracking-tighter overflow-hidden hero-title-wrap">
+            <span className="block translate-y-full">JOO</span>
+          </h1>
+          <div className="flex items-center justify-center gap-4 md:gap-8 overflow-hidden hero-title-wrap">
+            <div className="h-[1px] w-[10vw] bg-white mt-2 md:mt-4 hero-line opacity-0 scale-x-0 origin-left"></div>
+            <h1 className="display-font text-[13vw] leading-[0.85] tracking-tighter">
+              <span className="block translate-y-full">ARCHI</span>
+            </h1>
+            <div className="h-[1px] w-[10vw] bg-white mt-2 md:mt-4 hero-line opacity-0 scale-x-0 origin-right"></div>
+          </div>
+          <p className="mt-8 text-sm md:text-base uppercase tracking-[0.4em] opacity-0 hero-fade">
+            Refining Space &amp; Time
+          </p>
+        </div>
+
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 mix-blend-exclusion animate-bounce hero-fade opacity-0">
+          <ArrowDown strokeWidth={1.5} className="w-5 h-5" />
+        </div>
+      </section>
+
+      {/* INTRO */}
+      <section className="py-32 px-6 md:px-20 max-w-[1600px] mx-auto bg-[var(--c-bg)]">
+        <div className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-start">
+          <div className="lg:col-span-7">
+            <h2 className="display-font text-4xl md:text-6xl leading-[1.1] tracking-tight text-[#1a1a1a]">
+              <SplitText>We define the</SplitText>
+              <br />
+              <span className="text-gray-400"><SplitText>invisible lines</SplitText></span>
+              <SplitText> between</SplitText>
+              <br />
+              <SplitText>nature and structure.</SplitText>
+            </h2>
+          </div>
+          <div className="lg:col-span-5 flex flex-col justify-between h-full pt-2">
+            <div className="text-xl md:text-2xl font-light text-gray-600 leading-relaxed">
+              <SplitText>
+                JOOARCHI Architectural Studio believes that the most profound
+                architecture is often the quietest. We strip away the unnecessary
+                to reveal the essential truth of a space, crafting environments
+                that breathe.
+              </SplitText>
+            </div>
+
+            <div className="mt-12 md:mt-24">
+              <div className="h-[1px] w-full bg-black/10 mb-6"></div>
+              <div className="flex justify-between items-end">
+                <div className="flex flex-col gap-1">
+                  <span className="text-xs uppercase tracking-widest text-gray-400">Founded</span>
+                  <span className="text-base">2024</span>
+                </div>
+                <div className="flex flex-col gap-1 text-right">
+                  <span className="text-xs uppercase tracking-widest text-gray-400">Location</span>
+                  <span className="text-base">Oslo / New York</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* WORKS STACK */}
+      <section className="stack-section pb-32">
+        <div className="px-6 md:px-20 mb-20 flex justify-between items-end">
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <div className="w-2 h-2 rounded-full bg-black"></div>
+              <span className="text-sm font-medium uppercase tracking-widest text-gray-500">Selected Works</span>
+            </div>
+            <h2 className="display-font text-4xl md:text-5xl font-medium tracking-tight">
+              FEATURED
+              <br />
+              PROJECTS
+            </h2>
+          </div>
+          <div className="hidden md:block">
+            <Link to="/projects" className="group flex items-center gap-2 text-sm font-medium uppercase tracking-widest hover:opacity-60 transition-opacity">
+              View Archive
+              <ArrowRight strokeWidth={1.5} className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </div>
+        </div>
+
+        <div className="stack-container px-4 md:px-0">
+          {/* Project 01 */}
+          <div className="card-item">
+            <Link to="/projects/1" className="card-inner block">
+              <div className="card-content">
+                <div className="w-full">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-sm font-mono text-gray-400">01 / 03</span>
+                    <span className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
+                      <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
+                    </span>
+                  </div>
+                  <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
+                    SILENT VILLA
+                  </h3>
+                  <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
+                    Kyoto, Japan
+                  </p>
+                </div>
+                <div className="space-y-6">
+                  <p className="text-base text-gray-600 leading-relaxed font-light">
+                    A minimalist concrete residence designed to capture the
+                    changing shadows of the surrounding bamboo forest. A study
+                    in negative space.
+                  </p>
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">Residential</span>
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">2023</span>
+                  </div>
+                </div>
+              </div>
+              <div className="card-img-wrap">
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0dccab47-16b0-4716-9e1a-b97f124e3031_1600w.webp" className="card-img" alt="Silent Villa" />
+              </div>
+            </Link>
+          </div>
+
+          {/* Project 02 */}
+          <div className="card-item">
+            <Link to="/projects/2" className="card-inner block">
+              <div className="card-content">
+                <div className="w-full">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-sm font-mono text-gray-400">02 / 03</span>
+                    <span className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
+                      <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
+                    </span>
+                  </div>
+                  <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
+                    VERTICAL FARM
+                  </h3>
+                  <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
+                    Berlin, Germany
+                  </p>
+                </div>
+                <div className="space-y-6">
+                  <p className="text-base text-gray-600 leading-relaxed font-light">
+                    Adaptive reuse of a brutalist bunker into a sustainable
+                    vertical farm and communal living space.
+                  </p>
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">Public</span>
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">2024</span>
+                  </div>
+                </div>
+              </div>
+              <div className="card-img-wrap">
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/952269bf-60f5-48dc-afce-13953bead1eb_1600w.webp" className="card-img" alt="Vertical Farm" />
+              </div>
+            </Link>
+          </div>
+
+          {/* Project 03 */}
+          <div className="card-item">
+            <Link to="/projects/3" className="card-inner block">
+              <div className="card-content">
+                <div className="w-full">
+                  <div className="flex justify-between items-start mb-2">
+                    <span className="text-sm font-mono text-gray-400">03 / 03</span>
+                    <span className="p-2 border border-gray-100 rounded-full hover:bg-gray-50 transition-colors cursor-pointer">
+                      <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
+                    </span>
+                  </div>
+                  <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
+                    NORDIC CLIFF
+                  </h3>
+                  <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
+                    Reykjavik, Iceland
+                  </p>
+                </div>
+                <div className="space-y-6">
+                  <p className="text-base text-gray-600 leading-relaxed font-light">
+                    A glass and steel structure cantilevered over the volcanic
+                    landscape. Blurring the line between shelter and exposure.
+                  </p>
+                  <div className="flex gap-2">
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">Concept</span>
+                    <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">2025</span>
+                  </div>
+                </div>
+              </div>
+              <div className="card-img-wrap">
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/aa5ed4de-1a7e-4bb7-b0ea-1a4c511663df_1600w.webp" className="card-img" alt="Nordic Cliff" />
+              </div>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* PHILOSOPHY / SPACER */}
+      <section className="py-32 md:py-48 flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
+        <h2 className="display-font text-3xl md:text-5xl font-medium tracking-tight mb-8 relative z-10">
+          Form follows
+          <span className="text-gray-400 italic font-light"> fiction.</span>
+        </h2>
+        <div className="max-w-lg text-gray-500 font-light leading-relaxed relative z-10">
+          We don't just build structures; we draft narratives. Every line we
+          draw is a sentence in the story of the landscape.
+        </div>
+        <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+      </section>
+    </div>
+  );
+}
