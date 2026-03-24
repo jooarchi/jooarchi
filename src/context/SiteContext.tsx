@@ -137,13 +137,10 @@ export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (snapshot.exists()) {
         setSettings(snapshot.data() as SiteSettings);
       } else {
-        // Only initialize settings if user is admin, to avoid permission errors for visitors
-        const isAdmin = auth.currentUser?.email === 'jooheegul@gmail.com';
-        if (isAdmin) {
-          setDoc(doc(db, 'settings', 'global'), DEFAULT_SETTINGS).catch(err => {
-            handleFirestoreError(err, OperationType.WRITE, 'settings/global');
-          });
-        }
+        // Initialize settings if they don't exist
+        setDoc(doc(db, 'settings', 'global'), DEFAULT_SETTINGS).catch(err => {
+          handleFirestoreError(err, OperationType.WRITE, 'settings/global');
+        });
       }
     }, (error) => {
       handleFirestoreError(error, OperationType.GET, 'settings/global');

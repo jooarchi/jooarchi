@@ -42,12 +42,12 @@ service cloud.firestore {
 
     match /projects/{projectId} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true; // Publicly writable as requested to bypass Auth domain issues
     }
 
     match /settings/global {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if true; // Publicly writable as requested to bypass Auth domain issues
     }
   }
 }
