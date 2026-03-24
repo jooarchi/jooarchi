@@ -57,12 +57,12 @@ body {
 .loader {
   position: fixed;
   inset: 0;
-  background: var(--c-dark);
+  background: var(--c-bg);
   z-index: 10000;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #fff;
+  color: var(--c-dark);
 }
 
 .loader-line {
@@ -70,7 +70,7 @@ body {
   bottom: 0;
   left: 0;
   height: 2px;
-  background: #fff;
+  background: var(--c-dark);
   width: 0%;
 }
 
