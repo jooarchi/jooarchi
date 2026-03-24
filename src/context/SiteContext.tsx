@@ -96,7 +96,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   isUnderConstruction: true,
   underConstructionImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop",
   underConstructionText: "A space is waiting to be born",
-  logoImage: "",
+  logoImage: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/7523f66c-5e45-422f-8700-669533359d9c_1024w.webp",
   homeHeroImage: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/482e7b6a-168c-4d0d-b35d-0e2ff4014577_3840w.webp",
   aboutImage: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=2000&auto=format&fit=crop"
 };

@@ -12,7 +12,7 @@ import ProjectDetail from './pages/ProjectDetail';
 import About from './pages/About';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
-import { SiteProvider } from './context/SiteContext';
+import { useSiteContext } from './context/SiteContext';
 import ErrorBoundary from './components/ErrorBoundary';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -30,6 +30,7 @@ function ScrollToTop() {
 
 export default function App() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { settings } = useSiteContext();
 
   useEffect(() => {
     // Initialize Lenis
@@ -63,27 +64,37 @@ export default function App() {
   }, []);
 
   return (
-    <SiteProvider>
-      <Router>
-        <ScrollToTop />
-        <div ref={containerRef} className="text-base sm:text-lg leading-relaxed font-sans bg-[var(--c-bg)] min-h-screen">
+    <Router>
+      <ScrollToTop />
+      <div ref={containerRef} className="text-base sm:text-lg leading-relaxed font-sans bg-[var(--c-bg)] min-h-screen">
         {/* NOISE */}
         <div className="noise"></div>
 
         {/* PRELOADER */}
         <div className="loader">
           <div className="loader-text flex flex-col items-center justify-center gap-4">
-            <svg viewBox="0 0 100 100" className="w-20 h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" strokeWidth="7" strokeLinejoin="miter" strokeLinecap="square">
-              <line x1="30" y1="15" x2="50" y2="15"></line>
-              <line x1="50" y1="15" x2="50" y2="65"></line>
-              <path d="M 50 65 C 50 95, 20 95, 20 65"></path>
-              <line x1="50" y1="15" x2="80" y2="85"></line>
-              <line x1="50" y1="60" x2="70" y2="60"></line>
-            </svg>
-            <div className="flex flex-col items-center text-center">
-              <span className="display-font text-3xl md:text-4xl font-medium tracking-tighter leading-none">JOOARCHI</span>
-              <span className="text-sm md:text-base tracking-[0.2em] mt-2 leading-none opacity-80 uppercase">Architectural Studio</span>
-            </div>
+            {settings.logoImage ? (
+              <img 
+                src={settings.logoImage} 
+                alt="Logo" 
+                className="w-32 h-32 md:w-40 md:h-40 object-contain invert" 
+                referrerPolicy="no-referrer"
+              />
+            ) : (
+              <>
+                <svg viewBox="0 0 100 100" className="w-20 h-20 md:w-24 md:h-24" fill="none" stroke="currentColor" strokeWidth="7" strokeLinejoin="miter" strokeLinecap="square">
+                  <line x1="30" y1="15" x2="50" y2="15"></line>
+                  <line x1="50" y1="15" x2="50" y2="65"></line>
+                  <path d="M 50 65 C 50 95, 20 95, 20 65"></path>
+                  <line x1="50" y1="15" x2="80" y2="85"></line>
+                  <line x1="50" y1="60" x2="70" y2="60"></line>
+                </svg>
+                <div className="flex flex-col items-center text-center">
+                  <span className="display-font text-3xl md:text-4xl font-medium tracking-tighter leading-none">JOOARCHI</span>
+                  <span className="text-sm md:text-base tracking-[0.2em] mt-2 leading-none opacity-80 uppercase">Architectural Studio</span>
+                </div>
+              </>
+            )}
           </div>
           <div className="loader-line"></div>
         </div>
@@ -106,6 +117,5 @@ export default function App() {
         <Footer />
       </div>
     </Router>
-    </SiteProvider>
   );
 }
