@@ -1,13 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { useSiteContext, Project, SiteSettings } from '../context/SiteContext';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage, auth } from '../firebase';
-import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
+import { storage } from '../firebase';
 
 export default function Admin() {
   const [password, setPassword] = useState('');
   const [isPasswordAuthenticated, setIsPasswordAuthenticated] = useState(false);
-  const [user, setUser] = useState(auth.currentUser);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'projects' | 'settings' | 'mainpage'>('projects');
   const [isUploading, setIsUploading] = useState(false);
@@ -23,13 +21,6 @@ export default function Admin() {
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-    });
-    return () => unsubscribe();
-  }, []);
-
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === '0922') {
@@ -40,22 +31,10 @@ export default function Admin() {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    try {
-      const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      setError('');
-    } catch (err: any) {
-      console.error("Login error:", err);
-      setError(err.message);
-    }
+  const handleLogout = () => {
+    setIsPasswordAuthenticated(false);
+    setPassword('');
   };
-
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
-
-  const isAdmin = user?.email === 'jooheegul@gmail.com';
 
   const uploadImages = async (files: File[]): Promise<string[]> => {
     const uploadPromises = files.map(async (file) => {
@@ -213,48 +192,12 @@ export default function Admin() {
     );
   }
 
-  if (!user) {
-    return (
-      <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24 flex items-center justify-center">
-        <div className="max-w-md w-full px-6 text-center">
-          <h1 className="display-font text-3xl font-medium mb-8">Verify Identity</h1>
-          <p className="text-sm text-gray-500 mb-8">Please sign in with your Google account to verify administrative permissions.</p>
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full bg-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
-          >
-            Sign in with Google
-          </button>
-          {error && <p className="text-red-500 text-xs mt-4">{error}</p>}
-        </div>
-      </div>
-    );
-  }
-
-  if (!isAdmin) {
-    return (
-      <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24 flex items-center justify-center">
-        <div className="max-w-md w-full px-6 text-center">
-          <h1 className="display-font text-3xl font-medium mb-8">Access Denied</h1>
-          <p className="text-sm text-gray-500 mb-8">You are signed in as <span className="font-bold">{user.email}</span>, which does not have administrative permissions.</p>
-          <button
-            onClick={handleLogout}
-            className="w-full bg-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
-          >
-            Sign Out
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24">
       <div className="max-w-[1600px] mx-auto px-6 md:px-12">
         <div className="flex justify-between items-center mb-8">
           <h1 className="display-font text-5xl font-medium tracking-tighter">ADMIN DASHBOARD</h1>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-gray-500">{user.email}</span>
             <button onClick={handleLogout} className="text-xs underline text-gray-400 hover:text-black">Logout</button>
           </div>
         </div>
