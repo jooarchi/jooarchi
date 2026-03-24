@@ -1,8 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useSiteContext, Project, SiteSettings } from '../context/SiteContext';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage, auth } from '../firebase';
-import { signInAnonymously, signOut } from 'firebase/auth';
+import { storage } from '../firebase';
 
 export default function Admin() {
   const [password, setPassword] = useState('');
@@ -22,24 +21,17 @@ export default function Admin() {
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === '0922') {
-      try {
-        await signInAnonymously(auth);
-        setIsPasswordAuthenticated(true);
-        setError('');
-      } catch (err: any) {
-        console.error("Auth error:", err);
-        setError(`Auth failed: ${err.message}`);
-      }
+      setIsPasswordAuthenticated(true);
+      setError('');
     } else {
       setError('Incorrect password');
     }
   };
 
-  const handleLogout = async () => {
-    await signOut(auth);
+  const handleLogout = () => {
     setIsPasswordAuthenticated(false);
     setPassword('');
   };
