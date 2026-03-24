@@ -101,7 +101,12 @@ export default function About() {
           <div className="md:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-16">
             {/* Principal */}
             <div>
-              <img src="https://picsum.photos/seed/architect/800/1000" alt="Principal Architect" className="w-full aspect-[3/4] object-cover mb-8 grayscale" />
+              <img 
+                src={settings.aboutImage || "https://picsum.photos/seed/architect/800/1000"} 
+                alt="Principal Architect" 
+                className="w-full aspect-[3/4] object-cover mb-8 grayscale" 
+                referrerPolicy="no-referrer"
+              />
               <h3 className="display-font text-3xl font-medium mb-2">Joohee Gul</h3>
               <p className="text-sm uppercase tracking-widest text-gray-400 mb-8">Principal Architect / Founder</p>
               

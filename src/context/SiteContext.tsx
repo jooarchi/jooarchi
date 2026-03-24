@@ -1,4 +1,57 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { collection, onSnapshot, doc, setDoc, updateDoc, deleteDoc, getDoc, getDocFromServer } from 'firebase/firestore';
+import { db, auth } from '../firebase';
+
+export enum OperationType {
+  CREATE = 'create',
+  UPDATE = 'update',
+  DELETE = 'delete',
+  LIST = 'list',
+  GET = 'get',
+  WRITE = 'write',
+}
+
+interface FirestoreErrorInfo {
+  error: string;
+  operationType: OperationType;
+  path: string | null;
+  authInfo: {
+    userId: string | undefined;
+    email: string | null | undefined;
+    emailVerified: boolean | undefined;
+    isAnonymous: boolean | undefined;
+    tenantId: string | null | undefined;
+    providerInfo: {
+      providerId: string;
+      displayName: string | null;
+      email: string | null;
+      photoUrl: string | null;
+    }[];
+  }
+}
+
+function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
+  const errInfo: FirestoreErrorInfo = {
+    error: error instanceof Error ? error.message : String(error),
+    authInfo: {
+      userId: auth.currentUser?.uid,
+      email: auth.currentUser?.email,
+      emailVerified: auth.currentUser?.emailVerified,
+      isAnonymous: auth.currentUser?.isAnonymous,
+      tenantId: auth.currentUser?.tenantId,
+      providerInfo: auth.currentUser?.providerData.map(provider => ({
+        providerId: provider.providerId,
+        displayName: provider.displayName,
+        email: provider.email,
+        photoUrl: provider.photoURL
+      })) || []
+    },
+    operationType,
+    path
+  }
+  console.error('Firestore Error: ', JSON.stringify(errInfo));
+  throw new Error(JSON.stringify(errInfo));
+}
 
 export interface Project {
   id: number;
@@ -7,7 +60,7 @@ export interface Project {
   year: string;
   category: string;
   scale: string;
-  image: string;
+  images: string[];
   description?: string;
 }
 
@@ -20,79 +73,19 @@ export interface SiteSettings {
   isUnderConstruction: boolean;
   underConstructionImage: string;
   underConstructionText: string;
+  logoImage?: string;
+  homeHeroImage?: string;
+  aboutImage?: string;
 }
 
 interface SiteContextType {
   projects: Project[];
   settings: SiteSettings;
-  updateProject: (id: number, updatedProject: Partial<Project>) => void;
-  addProject: (project: Omit<Project, 'id'>) => void;
-  deleteProject: (id: number) => void;
-  updateSettings: (newSettings: Partial<SiteSettings>) => void;
+  updateProject: (id: number, updatedProject: Partial<Project>) => Promise<void>;
+  addProject: (project: Omit<Project, 'id'>) => Promise<void>;
+  deleteProject: (id: number) => Promise<void>;
+  updateSettings: (newSettings: Partial<SiteSettings>) => Promise<void>;
 }
-
-const DEFAULT_PROJECTS: Project[] = [
-  {
-    id: 1,
-    title: 'SILENT VILLA',
-    location: 'Kyoto, Japan',
-    year: '2023',
-    category: 'Residential',
-    scale: '350 sqm',
-    image: 'https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/0dccab47-16b0-4716-9e1a-b97f124e3031_1600w.webp',
-    description: 'A minimalist concrete residence designed to capture the changing shadows of the surrounding bamboo forest. A study in negative space.'
-  },
-  {
-    id: 2,
-    title: 'VERTICAL FARM',
-    location: 'Berlin, Germany',
-    year: '2024',
-    category: 'Public',
-    scale: '4,200 sqm',
-    image: 'https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/952269bf-60f5-48dc-afce-13953bead1eb_1600w.webp',
-    description: 'Adaptive reuse of a brutalist bunker into a sustainable vertical farm and communal living space.'
-  },
-  {
-    id: 3,
-    title: 'NORDIC CLIFF',
-    location: 'Reykjavik, Iceland',
-    year: '2025',
-    category: 'Concept',
-    scale: '1,200 sqm',
-    image: 'https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/aa5ed4de-1a7e-4bb7-b0ea-1a4c511663df_1600w.webp',
-    description: 'A glass and steel structure cantilevered over the volcanic landscape. Blurring the line between shelter and exposure.'
-  },
-  {
-    id: 4,
-    title: 'URBAN OASIS',
-    location: 'Seoul, Korea',
-    year: '2022',
-    category: 'Commercial',
-    scale: '2,800 sqm',
-    image: 'https://picsum.photos/seed/architecture1/1600/1200',
-    description: 'A commercial complex integrating natural elements into the urban fabric.'
-  },
-  {
-    id: 5,
-    title: 'THE MONOLITH',
-    location: 'New York, USA',
-    year: '2023',
-    category: 'Office',
-    scale: '15,000 sqm',
-    image: 'https://picsum.photos/seed/architecture2/1600/1200',
-    description: 'A striking office tower redefining the skyline with its bold, monolithic presence.'
-  },
-  {
-    id: 6,
-    title: 'HERITAGE RENEWAL',
-    location: 'London, UK',
-    year: '2024',
-    category: 'Renovation',
-    scale: '850 sqm',
-    image: 'https://picsum.photos/seed/architecture3/1600/1200',
-    description: 'Careful restoration and modern extension of a historic Victorian building.'
-  }
-];
 
 const DEFAULT_SETTINGS: SiteSettings = {
   aboutText: "JOOARCHI is an architectural practice based in Oslo and New York. We believe in creating spaces that resonate with their environment and the people who inhabit them. Our approach is rooted in a deep understanding of materials, light, and context. We work across residential, commercial, and cultural projects.",
@@ -101,46 +94,101 @@ const DEFAULT_SETTINGS: SiteSettings = {
   contactAddress: "Oslo, Norway / New York, USA",
   homeIntroText: "JOOARCHI Architectural Studio believes that the most profound architecture is often the quietest. We strip away the unnecessary to reveal the essential truth of a space, crafting environments that breathe.",
   isUnderConstruction: true,
-  underConstructionImage: "/bg-image.jpg",
-  underConstructionText: "A space is waiting to be born"
+  underConstructionImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop",
+  underConstructionText: "A space is waiting to be born",
+  logoImage: "",
+  homeHeroImage: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/482e7b6a-168c-4d0d-b35d-0e2ff4014577_3840w.webp",
+  aboutImage: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=2000&auto=format&fit=crop"
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
 
 export const SiteProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [projects, setProjects] = useState<Project[]>(() => {
-    const saved = localStorage.getItem('jooarchi_projects');
-    return saved ? JSON.parse(saved) : DEFAULT_PROJECTS;
-  });
-
-  const [settings, setSettings] = useState<SiteSettings>(() => {
-    const saved = localStorage.getItem('jooarchi_settings');
-    return saved ? JSON.parse(saved) : DEFAULT_SETTINGS;
-  });
+  const [projects, setProjects] = useState<Project[]>([]);
+  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
 
   useEffect(() => {
-    localStorage.setItem('jooarchi_projects', JSON.stringify(projects));
-  }, [projects]);
+    async function testConnection() {
+      try {
+        await getDocFromServer(doc(db, 'test', 'connection'));
+      } catch (error) {
+        if(error instanceof Error && error.message.includes('the client is offline')) {
+          console.error("Please check your Firebase configuration. ");
+        }
+      }
+    }
+    testConnection();
+
+    const unsubscribe = onSnapshot(collection(db, 'projects'), (snapshot) => {
+      const projectsData = snapshot.docs.map(doc => ({
+        ...doc.data(),
+        id: Number(doc.id)
+      })) as Project[];
+      setProjects(projectsData.sort((a, b) => b.id - a.id));
+    }, (error) => {
+      handleFirestoreError(error, OperationType.LIST, 'projects');
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
-    localStorage.setItem('jooarchi_settings', JSON.stringify(settings));
-  }, [settings]);
+    const unsubscribe = onSnapshot(doc(db, 'settings', 'global'), (snapshot) => {
+      if (snapshot.exists()) {
+        setSettings(snapshot.data() as SiteSettings);
+      } else {
+        // Only initialize settings if user is admin, to avoid permission errors for visitors
+        const isAdmin = auth.currentUser?.email === 'jooheegul@gmail.com';
+        if (isAdmin) {
+          setDoc(doc(db, 'settings', 'global'), DEFAULT_SETTINGS).catch(err => {
+            handleFirestoreError(err, OperationType.WRITE, 'settings/global');
+          });
+        }
+      }
+    }, (error) => {
+      handleFirestoreError(error, OperationType.GET, 'settings/global');
+    });
 
-  const updateProject = (id: number, updatedProject: Partial<Project>) => {
-    setProjects(prev => prev.map(p => p.id === id ? { ...p, ...updatedProject } : p));
+    return () => unsubscribe();
+  }, []);
+
+  const updateProject = async (id: number, updatedProject: Partial<Project>) => {
+    const path = `projects/${id}`;
+    try {
+      const projectRef = doc(db, 'projects', id.toString());
+      await updateDoc(projectRef, updatedProject);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, path);
+    }
   };
 
-  const addProject = (project: Omit<Project, 'id'>) => {
+  const addProject = async (project: Omit<Project, 'id'>) => {
     const newId = projects.length > 0 ? Math.max(...projects.map(p => p.id)) + 1 : 1;
-    setProjects(prev => [...prev, { ...project, id: newId }]);
+    const path = `projects/${newId}`;
+    try {
+      await setDoc(doc(db, 'projects', newId.toString()), { ...project, id: newId });
+    } catch (err) {
+      handleFirestoreError(err, OperationType.CREATE, path);
+    }
   };
 
-  const deleteProject = (id: number) => {
-    setProjects(prev => prev.filter(p => p.id !== id));
+  const deleteProject = async (id: number) => {
+    const path = `projects/${id}`;
+    try {
+      await deleteDoc(doc(db, 'projects', id.toString()));
+    } catch (err) {
+      handleFirestoreError(err, OperationType.DELETE, path);
+    }
   };
 
-  const updateSettings = (newSettings: Partial<SiteSettings>) => {
-    setSettings(prev => ({ ...prev, ...newSettings }));
+  const updateSettings = async (newSettings: Partial<SiteSettings>) => {
+    const path = 'settings/global';
+    try {
+      const settingsRef = doc(db, 'settings', 'global');
+      await updateDoc(settingsRef, newSettings);
+    } catch (err) {
+      handleFirestoreError(err, OperationType.UPDATE, path);
+    }
   };
 
   return (

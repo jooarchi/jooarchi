@@ -128,7 +128,12 @@ export default function Home() {
       {/* HERO */}
       <section className="h-screen relative flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 w-full h-full hero-img-wrap">
-          <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/482e7b6a-168c-4d0d-b35d-0e2ff4014577_3840w.webp" className="w-full h-[120%] object-cover brightness-[0.6] hero-img" alt="Hero Architecture" />
+          <img 
+            src={settings.homeHeroImage || "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/482e7b6a-168c-4d0d-b35d-0e2ff4014577_3840w.webp"} 
+            className="w-full h-[120%] object-cover brightness-[0.6] hero-img" 
+            alt="Hero Architecture" 
+            referrerPolicy="no-referrer"
+          />
         </div>
 
         <div className="relative z-10 text-center text-white mix-blend-exclusion px-4">
@@ -241,7 +246,7 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="card-img-wrap">
-                  <img src={project.image} className="card-img" alt={project.title} />
+                  <img src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} className="card-img" alt={project.title} />
                 </div>
               </Link>
             </div>

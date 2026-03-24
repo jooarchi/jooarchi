@@ -1,76 +1,191 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSiteContext, Project, SiteSettings } from '../context/SiteContext';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { storage, auth } from '../firebase';
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
 
 export default function Admin() {
   const [password, setPassword] = useState('');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isPasswordAuthenticated, setIsPasswordAuthenticated] = useState(false);
+  const [user, setUser] = useState(auth.currentUser);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'projects' | 'settings' | 'mainpage'>('projects');
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const heroInputRef = useRef<HTMLInputElement>(null);
+  const aboutInputRef = useRef<HTMLInputElement>(null);
+  const ucInputRef = useRef<HTMLInputElement>(null);
   
   const { projects, settings, updateProject, addProject, deleteProject, updateSettings } = useSiteContext();
 
   const [editingProject, setEditingProject] = useState<Project | null>(null);
   const [isAddingProject, setIsAddingProject] = useState(false);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === '0922') {
-      setIsAuthenticated(true);
+      setIsPasswordAuthenticated(true);
       setError('');
     } else {
       setError('Incorrect password');
     }
   };
 
-  const handleSaveProject = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const projectData = {
-      title: formData.get('title') as string,
-      location: formData.get('location') as string,
-      year: formData.get('year') as string,
-      category: formData.get('category') as string,
-      scale: formData.get('scale') as string,
-      image: formData.get('image') as string,
-      description: formData.get('description') as string,
-    };
-
-    if (isAddingProject) {
-      addProject(projectData);
-      setIsAddingProject(false);
-    } else if (editingProject) {
-      updateProject(editingProject.id, projectData);
-      setEditingProject(null);
+  const handleGoogleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      setError('');
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError(err.message);
     }
   };
 
-  const handleSaveMainPage = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const settingsData: Partial<SiteSettings> = {
-      isUnderConstruction: formData.get('isUnderConstruction') === 'true',
-      underConstructionImage: formData.get('underConstructionImage') as string,
-      underConstructionText: formData.get('underConstructionText') as string,
-      homeIntroText: formData.get('homeIntroText') as string,
-    };
-    updateSettings(settingsData);
-    alert('Main Page settings saved successfully!');
+  const handleLogout = async () => {
+    await signOut(auth);
   };
 
-  const handleSaveSettings = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-    const settingsData: Partial<SiteSettings> = {
-      aboutText: formData.get('aboutText') as string,
-      contactEmail: formData.get('contactEmail') as string,
-      contactPhone: formData.get('contactPhone') as string,
-      contactAddress: formData.get('contactAddress') as string,
-    };
-    updateSettings(settingsData);
-    alert('Settings saved successfully!');
+  const isAdmin = user?.email === 'jooheegul@gmail.com';
+
+  const uploadImages = async (files: File[]): Promise<string[]> => {
+    const uploadPromises = files.map(async (file) => {
+      const storageRef = ref(storage, `projects/${Date.now()}_${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      return getDownloadURL(snapshot.ref);
+    });
+    return Promise.all(uploadPromises);
   };
 
-  if (!isAuthenticated) {
+  const uploadSingleImage = async (file: File, folder: string): Promise<string> => {
+    const storageRef = ref(storage, `${folder}/${Date.now()}_${file.name}`);
+    const snapshot = await uploadBytes(storageRef, file);
+    return getDownloadURL(snapshot.ref);
+  };
+
+  const handleSaveProject = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsUploading(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      
+      let imageUrls: string[] = editingProject?.images || [];
+      
+      if (selectedFiles.length > 0) {
+        const newUrls = await uploadImages(selectedFiles);
+        imageUrls = [...imageUrls, ...newUrls];
+      }
+
+      const projectData = {
+        title: formData.get('title') as string,
+        location: formData.get('location') as string,
+        year: formData.get('year') as string,
+        category: formData.get('category') as string,
+        scale: formData.get('scale') as string,
+        images: imageUrls,
+        description: formData.get('description') as string,
+      };
+
+      if (isAddingProject) {
+        await addProject(projectData);
+        setIsAddingProject(false);
+      } else if (editingProject) {
+        await updateProject(editingProject.id, projectData);
+        setEditingProject(null);
+      }
+      setSelectedFiles([]);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    } catch (err) {
+      console.error("Error saving project:", err);
+      alert("Failed to save project. Check console for details.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setSelectedFiles(Array.from(e.target.files));
+    }
+  };
+
+  const removeImage = (index: number) => {
+    if (editingProject) {
+      const newImages = [...editingProject.images];
+      newImages.splice(index, 1);
+      setEditingProject({ ...editingProject, images: newImages });
+    }
+  };
+
+  const handleSaveMainPage = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsUploading(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const settingsData: Partial<SiteSettings> = {
+        isUnderConstruction: formData.get('isUnderConstruction') === 'true',
+        underConstructionText: formData.get('underConstructionText') as string,
+        homeIntroText: formData.get('homeIntroText') as string,
+      };
+
+      if (ucInputRef.current?.files?.[0]) {
+        settingsData.underConstructionImage = await uploadSingleImage(ucInputRef.current.files[0], 'settings');
+      }
+      
+      if (heroInputRef.current?.files?.[0]) {
+        settingsData.homeHeroImage = await uploadSingleImage(heroInputRef.current.files[0], 'settings');
+      }
+
+      await updateSettings(settingsData);
+      alert('Main Page settings saved successfully!');
+    } catch (err) {
+      console.error("Error saving main page settings:", err);
+      alert("Failed to save settings.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleSaveSettings = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsUploading(true);
+    try {
+      const formData = new FormData(e.currentTarget);
+      const settingsData: Partial<SiteSettings> = {
+        aboutText: formData.get('aboutText') as string,
+        contactEmail: formData.get('contactEmail') as string,
+        contactPhone: formData.get('contactPhone') as string,
+        contactAddress: formData.get('contactAddress') as string,
+      };
+
+      if (logoInputRef.current?.files?.[0]) {
+        settingsData.logoImage = await uploadSingleImage(logoInputRef.current.files[0], 'settings');
+      }
+
+      if (aboutInputRef.current?.files?.[0]) {
+        settingsData.aboutImage = await uploadSingleImage(aboutInputRef.current.files[0], 'settings');
+      }
+
+      await updateSettings(settingsData);
+      alert('Settings saved successfully!');
+    } catch (err) {
+      console.error("Error saving site settings:", err);
+      alert("Failed to save settings.");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  if (!isPasswordAuthenticated) {
     return (
       <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24 flex items-center justify-center">
         <div className="max-w-md w-full px-6">
@@ -98,10 +213,51 @@ export default function Admin() {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24 flex items-center justify-center">
+        <div className="max-w-md w-full px-6 text-center">
+          <h1 className="display-font text-3xl font-medium mb-8">Verify Identity</h1>
+          <p className="text-sm text-gray-500 mb-8">Please sign in with your Google account to verify administrative permissions.</p>
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+          >
+            Sign in with Google
+          </button>
+          {error && <p className="text-red-500 text-xs mt-4">{error}</p>}
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24 flex items-center justify-center">
+        <div className="max-w-md w-full px-6 text-center">
+          <h1 className="display-font text-3xl font-medium mb-8">Access Denied</h1>
+          <p className="text-sm text-gray-500 mb-8">You are signed in as <span className="font-bold">{user.email}</span>, which does not have administrative permissions.</p>
+          <button
+            onClick={handleLogout}
+            className="w-full bg-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
+          >
+            Sign Out
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24">
       <div className="max-w-[1600px] mx-auto px-6 md:px-12">
-        <h1 className="display-font text-5xl font-medium tracking-tighter mb-8">ADMIN DASHBOARD</h1>
+        <div className="flex justify-between items-center mb-8">
+          <h1 className="display-font text-5xl font-medium tracking-tighter">ADMIN DASHBOARD</h1>
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-gray-500">{user.email}</span>
+            <button onClick={handleLogout} className="text-xs underline text-gray-400 hover:text-black">Logout</button>
+          </div>
+        </div>
         
         <div className="flex gap-4 mb-8 border-b border-gray-200 pb-4">
           <button 
@@ -129,7 +285,7 @@ export default function Admin() {
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-medium">Manage Projects</h2>
               <button 
-                onClick={() => { setIsAddingProject(true); setEditingProject(null); }}
+                onClick={() => { setIsAddingProject(true); setEditingProject(null); setSelectedFiles([]); }}
                 className="bg-black text-white px-4 py-2 text-xs uppercase tracking-widest"
               >
                 Add New Project
@@ -145,12 +301,52 @@ export default function Admin() {
                   <input name="year" defaultValue={editingProject?.year} placeholder="Year" required className="p-2 border rounded w-full" />
                   <input name="category" defaultValue={editingProject?.category} placeholder="Category" required className="p-2 border rounded w-full" />
                   <input name="scale" defaultValue={editingProject?.scale} placeholder="Scale" required className="p-2 border rounded w-full" />
-                  <input name="image" defaultValue={editingProject?.image} placeholder="Image URL" required className="p-2 border rounded w-full" />
+                  <div className="md:col-span-2">
+                    <label className="block text-xs font-bold uppercase tracking-widest mb-2">Upload Images</label>
+                    <input 
+                      type="file" 
+                      multiple 
+                      accept="image/*" 
+                      onChange={handleFileChange}
+                      ref={fileInputRef}
+                      className="p-2 border rounded w-full bg-white" 
+                    />
+                    {selectedFiles.length > 0 && (
+                      <p className="text-xs mt-1 text-gray-600">{selectedFiles.length} files selected</p>
+                    )}
+                  </div>
                 </div>
+
+                {editingProject && editingProject.images.length > 0 && (
+                  <div className="mt-4">
+                    <h4 className="text-xs font-bold uppercase tracking-widest mb-2">Current Images</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {editingProject.images.map((img, idx) => (
+                        <div key={idx} className="relative group">
+                          <img src={img} alt="" className="w-20 h-20 object-cover rounded border" />
+                          <button 
+                            type="button"
+                            onClick={() => removeImage(idx)}
+                            className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px] opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <textarea name="description" defaultValue={editingProject?.description} placeholder="Description" rows={4} className="p-2 border rounded w-full"></textarea>
                 <div className="flex gap-2">
-                  <button type="submit" className="bg-black text-white px-4 py-2 text-xs uppercase tracking-widest">Save</button>
-                  <button type="button" onClick={() => { setIsAddingProject(false); setEditingProject(null); }} className="bg-gray-200 text-black px-4 py-2 text-xs uppercase tracking-widest">Cancel</button>
+                  <button 
+                    type="submit" 
+                    disabled={isUploading}
+                    className="bg-black text-white px-4 py-2 text-xs uppercase tracking-widest disabled:bg-gray-400"
+                  >
+                    {isUploading ? 'Uploading...' : 'Save'}
+                  </button>
+                  <button type="button" onClick={() => { setIsAddingProject(false); setEditingProject(null); setSelectedFiles([]); }} className="bg-gray-200 text-black px-4 py-2 text-xs uppercase tracking-widest">Cancel</button>
                 </div>
               </form>
             ) : null}
@@ -159,7 +355,7 @@ export default function Admin() {
               {projects.map(project => (
                 <div key={project.id} className="p-4 border border-gray-200 rounded flex flex-col justify-between">
                   <div>
-                    <img src={project.image} alt={project.title} className="w-full h-40 object-cover mb-4 rounded" />
+                    <img src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} alt={project.title} className="w-full h-40 object-cover mb-4 rounded" />
                     <h3 className="font-medium">{project.title}</h3>
                     <p className="text-xs text-gray-500 mb-4">{project.category} • {project.year}</p>
                   </div>
@@ -194,15 +390,18 @@ export default function Admin() {
                 <h3 className="font-medium mb-4">Under Construction Settings</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Background Image URL</label>
-                    <input 
-                      name="underConstructionImage" 
-                      type="text" 
-                      defaultValue={settings.underConstructionImage} 
-                      placeholder="/bg-image.jpg or https://..."
-                      className="w-full p-3 border rounded focus:outline-none focus:border-black" 
-                    />
-                    <p className="text-xs text-gray-500 mt-2">Enter the path to the image (e.g., /bg-image.jpg if uploaded to public folder).</p>
+                    <label className="block text-sm font-medium mb-2">Background Image</label>
+                    <div className="flex items-center gap-4">
+                      {settings.underConstructionImage && (
+                        <img src={settings.underConstructionImage} alt="UC" className="w-20 h-20 object-cover rounded border" />
+                      )}
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        ref={ucInputRef}
+                        className="p-2 border rounded flex-1" 
+                      />
+                    </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium mb-2">Main Text</label>
@@ -218,14 +417,34 @@ export default function Admin() {
 
               <div className="pt-6 border-t border-gray-100">
                 <h3 className="font-medium mb-4">Full Website Settings</h3>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Home Intro Text</label>
-                  <textarea name="homeIntroText" defaultValue={settings.homeIntroText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Home Hero Image</label>
+                    <div className="flex items-center gap-4">
+                      {settings.homeHeroImage && (
+                        <img src={settings.homeHeroImage} alt="Hero" className="w-20 h-20 object-cover rounded border" />
+                      )}
+                      <input 
+                        type="file" 
+                        accept="image/*"
+                        ref={heroInputRef}
+                        className="p-2 border rounded flex-1" 
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Home Intro Text</label>
+                    <textarea name="homeIntroText" defaultValue={settings.homeIntroText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                  </div>
                 </div>
               </div>
 
-              <button type="submit" className="bg-black text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors mt-6">
-                Save Main Page Settings
+              <button 
+                type="submit" 
+                disabled={isUploading}
+                className="bg-black text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors mt-6 disabled:bg-gray-400"
+              >
+                {isUploading ? 'Saving...' : 'Save Main Page Settings'}
               </button>
             </form>
           </div>
@@ -235,6 +454,37 @@ export default function Admin() {
           <div className="bg-white p-8 rounded-lg border border-black/5">
             <h2 className="text-xl font-medium mb-6">Site Settings</h2>
             <form onSubmit={handleSaveSettings} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Logo Image</label>
+                  <div className="flex items-center gap-4">
+                    {settings.logoImage && (
+                      <img src={settings.logoImage} alt="Logo" className="w-12 h-12 object-contain border p-1" />
+                    )}
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      ref={logoInputRef}
+                      className="p-2 border rounded flex-1" 
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">About Image</label>
+                  <div className="flex items-center gap-4">
+                    {settings.aboutImage && (
+                      <img src={settings.aboutImage} alt="About" className="w-12 h-12 object-cover border" />
+                    )}
+                    <input 
+                      type="file" 
+                      accept="image/*"
+                      ref={aboutInputRef}
+                      className="p-2 border rounded flex-1" 
+                    />
+                  </div>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium mb-2">About Text</label>
                 <textarea name="aboutText" defaultValue={settings.aboutText} rows={5} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
@@ -253,8 +503,12 @@ export default function Admin() {
                   <input name="contactAddress" type="text" defaultValue={settings.contactAddress} className="w-full p-3 border rounded focus:outline-none focus:border-black" required />
                 </div>
               </div>
-              <button type="submit" className="bg-black text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors">
-                Save Settings
+              <button 
+                type="submit" 
+                disabled={isUploading}
+                className="bg-black text-white px-6 py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors disabled:bg-gray-400"
+              >
+                {isUploading ? 'Saving...' : 'Save Settings'}
               </button>
             </form>
           </div>

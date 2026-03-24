@@ -33,13 +33,22 @@ export default function Navigation() {
     <>
       <nav className="fixed top-0 w-full px-6 py-6 md:px-12 md:py-8 flex justify-between items-start md:items-center z-50 mix-blend-difference text-white pointer-events-none">
         <Link to="/" className="flex flex-col items-center gap-1.5 group hover:opacity-80 transition-opacity pointer-events-auto">
-          <svg viewBox="0 0 100 100" className="w-10 h-10 md:w-12 md:h-12" fill="none" stroke="currentColor" strokeWidth="7" strokeLinejoin="miter" strokeLinecap="square">
-            <line x1="30" y1="15" x2="50" y2="15"></line>
-            <line x1="50" y1="15" x2="50" y2="65"></line>
-            <path d="M 50 65 C 50 95, 20 95, 20 65"></path>
-            <line x1="50" y1="15" x2="80" y2="85"></line>
-            <line x1="50" y1="60" x2="70" y2="60"></line>
-          </svg>
+          {settings.logoImage ? (
+            <img 
+              src={settings.logoImage} 
+              alt="Logo" 
+              className="w-10 h-10 md:w-12 md:h-12 object-contain" 
+              referrerPolicy="no-referrer"
+            />
+          ) : (
+            <svg viewBox="0 0 100 100" className="w-10 h-10 md:w-12 md:h-12" fill="none" stroke="currentColor" strokeWidth="7" strokeLinejoin="miter" strokeLinecap="square">
+              <line x1="30" y1="15" x2="50" y2="15"></line>
+              <line x1="50" y1="15" x2="50" y2="65"></line>
+              <path d="M 50 65 C 50 95, 20 95, 20 65"></path>
+              <line x1="50" y1="15" x2="80" y2="85"></line>
+              <line x1="50" y1="60" x2="70" y2="60"></line>
+            </svg>
+          )}
           <div className="flex flex-col items-center text-center">
             <span className="display-font text-xl md:text-2xl font-medium tracking-tighter leading-none">JOOARCHI</span>
             <span className="text-xs tracking-[0.2em] mt-1 leading-none opacity-80 uppercase">Architectural Studio</span>

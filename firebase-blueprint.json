@@ -1,0 +1,52 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "An architectural project",
+      "type": "object",
+      "properties": {
+        "id": { "type": "number" },
+        "title": { "type": "string" },
+        "location": { "type": "string" },
+        "year": { "type": "string" },
+        "category": { "type": "string" },
+        "scale": { "type": "string" },
+        "images": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "List of image URLs for the project"
+        },
+        "description": { "type": "string" }
+      },
+      "required": ["title", "location", "year", "category", "scale", "images"]
+    },
+    "SiteSettings": {
+      "title": "SiteSettings",
+      "description": "Global site settings",
+      "type": "object",
+      "properties": {
+        "aboutText": { "type": "string" },
+        "contactEmail": { "type": "string" },
+        "contactPhone": { "type": "string" },
+        "contactAddress": { "type": "string" },
+        "homeIntroText": { "type": "string" },
+        "isUnderConstruction": { "type": "boolean" },
+        "underConstructionImage": { "type": "string" },
+        "underConstructionText": { "type": "string" },
+        "logoImage": { "type": "string", "description": "Base64 or URL for the site logo" },
+        "homeHeroImage": { "type": "string", "description": "Base64 or URL for the home hero section" },
+        "aboutImage": { "type": "string", "description": "Base64 or URL for the about page" }
+      }
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Collection of architectural projects"
+    },
+    "/settings/global": {
+      "schema": "SiteSettings",
+      "description": "Global site settings document"
+    }
+  }
+}

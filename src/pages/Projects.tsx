@@ -42,7 +42,7 @@ export default function Projects() {
             <Link key={project.id} to={`/projects/${project.id}`} className="group block">
               <div className="relative aspect-[4/5] overflow-hidden mb-6 bg-gray-100 rounded-lg">
                 <img 
-                  src={project.image} 
+                  src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} 
                   alt={project.title} 
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
