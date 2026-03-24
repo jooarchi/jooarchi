@@ -1,11 +1,13 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useSiteContext, Project, SiteSettings } from '../context/SiteContext';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
-import { storage } from '../firebase';
+import { storage, auth } from '../firebase';
+import { signInWithPopup, GoogleAuthProvider, onAuthStateChanged, signOut } from 'firebase/auth';
 
 export default function Admin() {
   const [password, setPassword] = useState('');
   const [isPasswordAuthenticated, setIsPasswordAuthenticated] = useState(false);
+  const [user, setUser] = useState(auth.currentUser);
   const [error, setError] = useState('');
   const [activeTab, setActiveTab] = useState<'projects' | 'settings' | 'mainpage'>('projects');
   const [isUploading, setIsUploading] = useState(false);
@@ -21,6 +23,13 @@ export default function Admin() {
   const [isAddingProject, setIsAddingProject] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
+
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     if (password === '0922') {
@@ -31,24 +40,48 @@ export default function Admin() {
     }
   };
 
-  const handleLogout = () => {
+  const handleGoogleLogin = async () => {
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+      setError('');
+    } catch (err: any) {
+      console.error("Login error:", err);
+      setError(`Auth failed: ${err.message}`);
+    }
+  };
+
+  const handleLogout = async () => {
+    await signOut(auth);
     setIsPasswordAuthenticated(false);
     setPassword('');
   };
 
+  const isAdmin = user?.email === 'jooheegul@gmail.com';
+
   const uploadImages = async (files: File[]): Promise<string[]> => {
     const uploadPromises = files.map(async (file) => {
-      const storageRef = ref(storage, `projects/${Date.now()}_${file.name}`);
-      const snapshot = await uploadBytes(storageRef, file);
-      return getDownloadURL(snapshot.ref);
+      try {
+        const storageRef = ref(storage, `projects/${Date.now()}_${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        return await getDownloadURL(snapshot.ref);
+      } catch (err: any) {
+        console.error(`Error uploading ${file.name}:`, err);
+        throw new Error(`Failed to upload ${file.name}: ${err.message}`);
+      }
     });
     return Promise.all(uploadPromises);
   };
 
   const uploadSingleImage = async (file: File, folder: string): Promise<string> => {
-    const storageRef = ref(storage, `${folder}/${Date.now()}_${file.name}`);
-    const snapshot = await uploadBytes(storageRef, file);
-    return getDownloadURL(snapshot.ref);
+    try {
+      const storageRef = ref(storage, `${folder}/${Date.now()}_${file.name}`);
+      const snapshot = await uploadBytes(storageRef, file);
+      return await getDownloadURL(snapshot.ref);
+    } catch (err: any) {
+      console.error(`Error uploading ${file.name}:`, err);
+      throw new Error(`Failed to upload ${file.name}: ${err.message}`);
+    }
   };
 
   const handleSaveProject = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -83,9 +116,9 @@ export default function Admin() {
       }
       setSelectedFiles([]);
       if (fileInputRef.current) fileInputRef.current.value = '';
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving project:", err);
-      alert("Failed to save project. Check console for details.");
+      alert(`Failed to save project: ${err.message || 'Unknown error'}`);
     } finally {
       setIsUploading(false);
     }
@@ -126,9 +159,9 @@ export default function Admin() {
 
       await updateSettings(settingsData);
       alert('Main Page settings saved successfully!');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving main page settings:", err);
-      alert("Failed to save settings.");
+      alert(`Failed to save settings: ${err.message || 'Unknown error'}`);
     } finally {
       setIsUploading(false);
     }
@@ -156,9 +189,9 @@ export default function Admin() {
 
       await updateSettings(settingsData);
       alert('Settings saved successfully!');
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving site settings:", err);
-      alert("Failed to save settings.");
+      alert(`Failed to save settings: ${err.message || 'Unknown error'}`);
     } finally {
       setIsUploading(false);
     }
@@ -192,12 +225,49 @@ export default function Admin() {
     );
   }
 
+  if (!user) {
+    return (
+      <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24 flex items-center justify-center">
+        <div className="max-w-md w-full px-6 text-center">
+          <h1 className="display-font text-3xl font-medium mb-8">Verify Database Permissions</h1>
+          <p className="text-sm text-gray-500 mb-8">To upload files and save changes, you must verify your identity with Google.</p>
+          <button
+            onClick={handleGoogleLogin}
+            className="w-full bg-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors flex items-center justify-center gap-2"
+          >
+            Verify with Google
+          </button>
+          {error && <p className="text-red-500 text-xs mt-4">{error}</p>}
+          <button onClick={() => setIsPasswordAuthenticated(false)} className="mt-4 text-xs underline text-gray-400">Back</button>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAdmin) {
+    return (
+      <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24 flex items-center justify-center">
+        <div className="max-w-md w-full px-6 text-center">
+          <h1 className="display-font text-3xl font-medium mb-8">Access Denied</h1>
+          <p className="text-sm text-gray-500 mb-8">You are signed in as <span className="font-bold">{user.email}</span>, which does not have administrative permissions for this database.</p>
+          <button
+            onClick={handleLogout}
+            className="w-full bg-black text-white py-3 text-xs uppercase tracking-widest hover:bg-gray-800 transition-colors"
+          >
+            Sign Out & Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24">
       <div className="max-w-[1600px] mx-auto px-6 md:px-12">
         <div className="flex justify-between items-center mb-8">
           <h1 className="display-font text-5xl font-medium tracking-tighter">ADMIN DASHBOARD</h1>
           <div className="flex items-center gap-4">
+            <span className="text-xs text-gray-500">{user.email}</span>
             <button onClick={handleLogout} className="text-xs underline text-gray-400 hover:text-black">Logout</button>
           </div>
         </div>
