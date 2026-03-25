@@ -58,16 +58,25 @@ export interface Project {
   title: string;
   location: string;
   year: string;
-  category: string;
-  scale: string;
+  category?: string;
+  scale?: string;
   images: string[];
   description?: string;
 }
 
 export interface SiteSettings {
   aboutText: string;
+  aboutPhilosophyTitle?: string;
+  aboutPhilosophyText?: string;
+  aboutApproachText?: string;
+  aboutPrincipalName?: string;
+  aboutPrincipalTitle?: string;
+  aboutPrincipalEducation?: string;
+  aboutPrincipalCareer?: string;
+  aboutPrincipalAwards?: string;
+  aboutStudioInfo?: string;
+  aboutClientsText?: string;
   contactEmail: string;
-  contactPhone: string;
   contactAddress: string;
   homeIntroText: string;
   isUnderConstruction: boolean;
@@ -89,8 +98,17 @@ interface SiteContextType {
 
 const DEFAULT_SETTINGS: SiteSettings = {
   aboutText: "JOOARCHI is an architectural practice based in Oslo and New York. We believe in creating spaces that resonate with their environment and the people who inhabit them. Our approach is rooted in a deep understanding of materials, light, and context. We work across residential, commercial, and cultural projects.",
+  aboutPhilosophyTitle: "Architecture that responds to context.",
+  aboutPhilosophyText: "Sense of Place\nWe believe every site has a unique voice. Our design process begins by listening to the land, understanding its history, climate, and cultural significance.\n\nUser-Centric Design\nSpaces are ultimately for people. We focus on human scale, natural light, and intuitive flow to create environments that enhance daily life.\n\nSustainable Architecture\nTrue sustainability goes beyond technology. It's about building structures that endure, using timeless materials and passive design strategies.\n\nAttitude Towards Detail\nGod is in the details. We obsess over the junction of materials, the quality of finishes, and the hidden mechanics that make a building work seamlessly.",
+  aboutApproachText: "01 Client Consultation\nUnderstanding the client's vision, requirements, and budget.\n\n02 Site & Context Research\nAnalyzing the physical, environmental, and cultural context of the site.\n\n03 Concept Design\nEstablishing the spatial concept and overall design direction.\n\n04 Design Development\nRefining the design, selecting materials, and coordinating with engineers.\n\n05 Construction Documentation\nProducing detailed technical drawings and specifications for bidding.\n\n06 Construction Collaboration\nWorking closely with contractors to ensure the design intent is realized.",
+  aboutPrincipalName: "Joohee Gul",
+  aboutPrincipalTitle: "Principal Architect / Founder",
+  aboutPrincipalEducation: "Master of Architecture, Harvard GSD\nB.Arch, Seoul National University",
+  aboutPrincipalCareer: "OMA, Rotterdam (2015-2019)\nFounded JOOARCHI (2024)",
+  aboutPrincipalAwards: "Young Architect Award (2025)\nAIA Design Excellence",
+  aboutStudioInfo: "Founded: 2024\nLocation: Seoul, Korea / Oslo, Norway\nTeam Size: 12 Architects & Designers\nExpertise: Architecture, Interior, Masterplanning",
+  aboutClientsText: "Developers, Private Clients, Public Institutions, Construction Partners, Cultural Foundations, Tech Companies",
   contactEmail: "studio@jooarchi.com",
-  contactPhone: "+47 123 456 789",
   contactAddress: "Oslo, Norway / New York, USA",
   homeIntroText: "JOOARCHI Architectural Studio believes that the most profound architecture is often the quietest. We strip away the unnecessary to reveal the essential truth of a space, crafting environments that breathe.",
   isUnderConstruction: true,

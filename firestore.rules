@@ -33,7 +33,6 @@ service cloud.firestore {
     // Fields:
     //   - aboutText: string
     //   - contactEmail: string
-    //   - contactPhone: string
     //   - contactAddress: string
     //   - homeIntroText: string
     //   - isUnderConstruction: boolean

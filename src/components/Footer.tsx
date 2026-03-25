@@ -24,19 +24,13 @@ export default function Footer() {
         </div>
 
         <a href={`mailto:${settings.contactEmail}`} className="block group">
-          <h2 className="display-font text-[10vw] leading-[0.8] font-medium tracking-tighter text-white group-hover:text-gray-300 transition-colors duration-500">
-            LET'S BUILD
+          <h2 className="display-font text-[5vw] leading-[0.8] font-medium tracking-tighter text-white group-hover:text-gray-300 transition-colors duration-500">
+            From Dream to Reality
           </h2>
           <div className="h-[1px] w-0 group-hover:w-full bg-white/50 mx-auto transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] mt-4"></div>
         </a>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-24 text-left border-t border-white/10 pt-12">
-          <div className="flex flex-col gap-4">
-            <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Socials</span>
-            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Instagram</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">LinkedIn</a>
-            <a href="#" className="text-sm text-gray-400 hover:text-white transition-colors">Are.na</a>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-24 text-left border-t border-white/10 pt-12">
           <div className="flex flex-col gap-4">
             <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Office</span>
             <p className="text-sm text-gray-400 whitespace-pre-line">
@@ -46,20 +40,11 @@ export default function Footer() {
           <div className="flex flex-col gap-4">
             <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">Contact</span>
             <a href={`mailto:${settings.contactEmail}`} className="text-sm text-gray-400 hover:text-white transition-colors">{settings.contactEmail}</a>
-            <a href={`tel:${settings.contactPhone.replace(/[^0-9+]/g, '')}`} className="text-sm text-gray-400 hover:text-white transition-colors">{settings.contactPhone}</a>
           </div>
-          <div className="flex flex-col justify-between">
-            <span className="text-xs uppercase tracking-widest text-gray-500 font-medium">© 2025</span>
-            <div className="text-xs text-gray-600 uppercase tracking-widest flex items-center gap-2">
-              <svg viewBox="0 0 100 100" className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="7" strokeLinejoin="miter" strokeLinecap="square">
-                <line x1="30" y1="15" x2="50" y2="15"></line>
-                <line x1="50" y1="15" x2="50" y2="65"></line>
-                <path d="M 50 65 C 50 95, 20 95, 20 65"></path>
-                <line x1="50" y1="15" x2="80" y2="85"></line>
-                <line x1="50" y1="60" x2="70" y2="60"></line>
-              </svg>
-              JOOARCHI
-            </div>
+          <div className="flex flex-col justify-end">
+            <p className="text-xs text-gray-600 uppercase tracking-widest">
+              All rights reserved by JOOARCHI
+            </p>
           </div>
         </div>
       </div>

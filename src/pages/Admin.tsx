@@ -78,8 +78,6 @@ export default function Admin() {
         title: formData.get('title') as string,
         location: formData.get('location') as string,
         year: formData.get('year') as string,
-        category: formData.get('category') as string,
-        scale: formData.get('scale') as string,
         images: imageUrls,
         description: formData.get('description') as string,
       };
@@ -151,8 +149,17 @@ export default function Admin() {
       const formData = new FormData(e.currentTarget);
       const settingsData: Partial<SiteSettings> = {
         aboutText: formData.get('aboutText') as string,
+        aboutPhilosophyTitle: formData.get('aboutPhilosophyTitle') as string,
+        aboutPhilosophyText: formData.get('aboutPhilosophyText') as string,
+        aboutApproachText: formData.get('aboutApproachText') as string,
+        aboutPrincipalName: formData.get('aboutPrincipalName') as string,
+        aboutPrincipalTitle: formData.get('aboutPrincipalTitle') as string,
+        aboutPrincipalEducation: formData.get('aboutPrincipalEducation') as string,
+        aboutPrincipalCareer: formData.get('aboutPrincipalCareer') as string,
+        aboutPrincipalAwards: formData.get('aboutPrincipalAwards') as string,
+        aboutStudioInfo: formData.get('aboutStudioInfo') as string,
+        aboutClientsText: formData.get('aboutClientsText') as string,
         contactEmail: formData.get('contactEmail') as string,
-        contactPhone: formData.get('contactPhone') as string,
         contactAddress: formData.get('contactAddress') as string,
       };
 
@@ -252,8 +259,6 @@ export default function Admin() {
                   <input name="title" defaultValue={editingProject?.title} placeholder="Title" required className="p-2 border rounded w-full" />
                   <input name="location" defaultValue={editingProject?.location} placeholder="Location" required className="p-2 border rounded w-full" />
                   <input name="year" defaultValue={editingProject?.year} placeholder="Year" required className="p-2 border rounded w-full" />
-                  <input name="category" defaultValue={editingProject?.category} placeholder="Category" required className="p-2 border rounded w-full" />
-                  <input name="scale" defaultValue={editingProject?.scale} placeholder="Scale" required className="p-2 border rounded w-full" />
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold uppercase tracking-widest mb-2">Upload Images</label>
                     <input 
@@ -439,19 +444,55 @@ export default function Admin() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">About Text</label>
-                <textarea name="aboutText" defaultValue={settings.aboutText} rows={5} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                <label className="block text-sm font-medium mb-2">About Intro Text</label>
+                <textarea name="aboutText" defaultValue={settings.aboutText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Philosophy Title</label>
+                  <input name="aboutPhilosophyTitle" type="text" defaultValue={settings.aboutPhilosophyTitle} className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Philosophy Text</label>
+                  <textarea name="aboutPhilosophyText" defaultValue={settings.aboutPhilosophyText} rows={5} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Approach Text</label>
+                  <textarea name="aboutApproachText" defaultValue={settings.aboutApproachText} rows={5} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Principal Name</label>
+                  <input name="aboutPrincipalName" type="text" defaultValue={settings.aboutPrincipalName} className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Principal Title</label>
+                  <input name="aboutPrincipalTitle" type="text" defaultValue={settings.aboutPrincipalTitle} className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Principal Education</label>
+                  <textarea name="aboutPrincipalEducation" defaultValue={settings.aboutPrincipalEducation} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Principal Career</label>
+                  <textarea name="aboutPrincipalCareer" defaultValue={settings.aboutPrincipalCareer} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Principal Awards</label>
+                  <textarea name="aboutPrincipalAwards" defaultValue={settings.aboutPrincipalAwards} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Studio Info</label>
+                  <textarea name="aboutStudioInfo" defaultValue={settings.aboutStudioInfo} rows={4} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Clients & Collaborators</label>
+                  <textarea name="aboutClientsText" defaultValue={settings.aboutClientsText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Contact Email</label>
                   <input name="contactEmail" type="email" defaultValue={settings.contactEmail} className="w-full p-3 border rounded focus:outline-none focus:border-black" required />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Contact Phone</label>
-                  <input name="contactPhone" type="text" defaultValue={settings.contactPhone} className="w-full p-3 border rounded focus:outline-none focus:border-black" required />
-                </div>
-                <div className="md:col-span-2">
                   <label className="block text-sm font-medium mb-2">Contact Address</label>
                   <input name="contactAddress" type="text" defaultValue={settings.contactAddress} className="w-full p-3 border rounded focus:outline-none focus:border-black" required />
                 </div>

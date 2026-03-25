@@ -58,14 +58,6 @@ export default function ProjectDetail() {
                 <span className="text-gray-500">Year</span>
                 <span className="font-medium">{project.year}</span>
               </li>
-              <li className="flex justify-between border-b border-black/5 pb-2">
-                <span className="text-gray-500">Category</span>
-                <span className="font-medium">{project.category}</span>
-              </li>
-              <li className="flex justify-between border-b border-black/5 pb-2">
-                <span className="text-gray-500">Scale</span>
-                <span className="font-medium">{project.scale}</span>
-              </li>
             </ul>
           </div>
 

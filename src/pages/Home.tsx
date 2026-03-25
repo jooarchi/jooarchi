@@ -37,12 +37,6 @@ export default function Home() {
         duration: 1.4,
         ease: 'power3.out'
       })
-      .to('.hero-line', {
-        scaleX: 1,
-        opacity: 1,
-        duration: 1,
-        ease: 'expo.out'
-      }, "-=1")
       .to('.hero-fade', { opacity: 1, duration: 1 }, "-=0.5");
 
       gsap.to('.hero-img', {
@@ -137,19 +131,12 @@ export default function Home() {
         </div>
 
         <div className="relative z-10 text-center text-white mix-blend-exclusion px-4">
-          <h1 className="display-font text-[13vw] leading-[0.85] tracking-tighter overflow-hidden hero-title-wrap">
-            <span className="block translate-y-full">JOO</span>
+          <h1 className="display-font text-[7vw] md:text-[6vw] leading-[1.1] tracking-tight overflow-hidden hero-title-wrap">
+            <span className="block translate-y-full">Envisioned in Mind,</span>
           </h1>
-          <div className="flex items-center justify-center gap-4 md:gap-8 overflow-hidden hero-title-wrap">
-            <div className="h-[1px] w-[10vw] bg-white mt-2 md:mt-4 hero-line opacity-0 scale-x-0 origin-left"></div>
-            <h1 className="display-font text-[13vw] leading-[0.85] tracking-tighter">
-              <span className="block translate-y-full">ARCHI</span>
-            </h1>
-            <div className="h-[1px] w-[10vw] bg-white mt-2 md:mt-4 hero-line opacity-0 scale-x-0 origin-right"></div>
-          </div>
-          <p className="mt-8 text-sm md:text-base uppercase tracking-[0.4em] opacity-0 hero-fade">
-            Refining Space &amp; Time
-          </p>
+          <h1 className="display-font text-[7vw] md:text-[6vw] leading-[1.1] tracking-tight overflow-hidden hero-title-wrap mt-2">
+            <span className="block translate-y-full">Born in Space</span>
+          </h1>
         </div>
 
         <div className="absolute bottom-10 left-1/2 -translate-x-1/2 text-white/50 mix-blend-exclusion animate-bounce hero-fade opacity-0">
@@ -175,20 +162,6 @@ export default function Home() {
               <SplitText>
                 {settings.homeIntroText}
               </SplitText>
-            </div>
-
-            <div className="mt-12 md:mt-24">
-              <div className="h-[1px] w-full bg-black/10 mb-6"></div>
-              <div className="flex justify-between items-end">
-                <div className="flex flex-col gap-1">
-                  <span className="text-xs uppercase tracking-widest text-gray-400">Founded</span>
-                  <span className="text-base">2024</span>
-                </div>
-                <div className="flex flex-col gap-1 text-right">
-                  <span className="text-xs uppercase tracking-widest text-gray-400">Location</span>
-                  <span className="text-base">Oslo / New York</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -257,12 +230,13 @@ export default function Home() {
       {/* PHILOSOPHY / SPACER */}
       <section className="py-32 md:py-48 flex flex-col items-center justify-center text-center px-6 relative overflow-hidden">
         <h2 className="display-font text-3xl md:text-5xl font-medium tracking-tight mb-8 relative z-10">
-          Form follows
-          <span className="text-gray-400 italic font-light"> fiction.</span>
+          Form emerges from
+          <span className="text-gray-400 italic font-light"> story.</span>
         </h2>
-        <div className="max-w-lg text-gray-500 font-light leading-relaxed relative z-10">
-          We don't just build structures; we draft narratives. Every line we
-          draw is a sentence in the story of the landscape.
+        <div className="max-w-xl text-gray-500 font-light leading-relaxed relative z-10">
+          We do not merely construct structures; we compose narratives.
+          Every line we draw becomes a sentence in the story the landscape tells,
+          and those sentences gather to form a world.
         </div>
         <div className="absolute inset-0 z-0 opacity-[0.03]" style={{ backgroundImage: 'linear-gradient(#000 1px, transparent 1px), linear-gradient(90deg, #000 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
       </section>
