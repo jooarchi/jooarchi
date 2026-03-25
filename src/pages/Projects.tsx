@@ -20,7 +20,7 @@ export default function Projects() {
                 <img 
                   src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} 
                   alt={project.title} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
               <div>

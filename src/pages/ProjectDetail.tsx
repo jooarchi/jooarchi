@@ -27,11 +27,11 @@ export default function ProjectDetail() {
   return (
     <div className="min-h-screen bg-[var(--c-bg)]">
       {/* Hero Image */}
-      <section className="h-[80vh] md:h-screen relative">
+      <section className="h-[80vh] md:h-screen relative bg-black">
         <img 
           src={project.images[0] || 'https://picsum.photos/seed/placeholder/1920/1080'} 
           alt={project.title} 
-          className="w-full h-full object-cover"
+          className="w-full h-full object-contain"
         />
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute bottom-12 left-6 md:left-12 text-white">
@@ -74,13 +74,13 @@ export default function ProjectDetail() {
       {/* Image Gallery */}
       {project.images.length > 1 && (
         <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-24">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12">
+          <div className="flex flex-col gap-12">
             {project.images.slice(1).map((img, index) => (
-              <div key={index} className={`overflow-hidden rounded-lg ${index % 3 === 0 ? 'md:col-span-2 aspect-[16/9]' : 'aspect-[4/5]'}`}>
+              <div key={index} className="overflow-hidden rounded-lg w-full">
                 <img 
                   src={img} 
                   alt={`${project.title} - ${index + 2}`} 
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-700"
+                  className="w-full h-auto hover:scale-105 transition-transform duration-700"
                 />
               </div>
             ))}
