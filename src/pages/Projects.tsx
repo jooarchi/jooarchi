@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { useSiteContext } from '../context/SiteContext';
 
 export default function Projects() {
-  const { projects } = useSiteContext();
+  const { projects, settings } = useSiteContext();
 
   return (
     <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24">
@@ -25,7 +25,7 @@ export default function Projects() {
               </div>
               <div>
                 <div className="flex justify-between items-start mb-2">
-                  <h3 className="display-font text-xl md:text-2xl font-medium tracking-tight">{project.title}</h3>
+                  <h3 className="display-font text-xl md:text-2xl font-medium tracking-tight" style={{ fontSize: settings.projectsTitleFontSize }}>{project.title}</h3>
                   <span className="text-xs font-mono text-gray-400">{project.year}</span>
                 </div>
                 <div className="flex justify-between items-end text-sm text-gray-500">

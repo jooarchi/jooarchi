@@ -58,6 +58,22 @@ export default function ProjectDetail() {
                 <span className="text-gray-500">Year</span>
                 <span className="font-medium">{project.year}</span>
               </li>
+              {project.category && (
+                <li className="flex justify-between border-b border-black/5 pb-2">
+                  <span className="text-gray-500">Category</span>
+                  <span className="font-medium">{project.category}</span>
+                </li>
+              )}
+              {project.scale && (
+                <li className="flex justify-between border-b border-black/5 pb-2">
+                  <span className="text-gray-500">Scale</span>
+                  <span className="font-medium">{project.scale}</span>
+                </li>
+              )}
+              <li className="flex flex-col border-b border-black/5 pb-2">
+                <span className="text-gray-500 mb-1">Description</span>
+                <span className="font-light text-xs text-gray-600 line-clamp-4">{project.shortDescription || project.description || 'No description available.'}</span>
+              </li>
             </ul>
           </div>
 

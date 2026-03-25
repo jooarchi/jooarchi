@@ -78,6 +78,9 @@ export default function Admin() {
         title: formData.get('title') as string,
         location: formData.get('location') as string,
         year: formData.get('year') as string,
+        category: formData.get('category') as string,
+        scale: formData.get('scale') as string,
+        shortDescription: formData.get('shortDescription') as string,
         images: imageUrls,
         description: formData.get('description') as string,
         descriptionFontSize: (formData.get('descriptionFontSize') as string) || '100%',
@@ -181,6 +184,7 @@ export default function Admin() {
         contactEmailFontSize: formData.get('contactEmailFontSize') as string,
         contactAddress: formData.get('contactAddress') as string,
         contactAddressFontSize: formData.get('contactAddressFontSize') as string,
+        projectsTitleFontSize: formData.get('projectsTitleFontSize') as string,
       };
 
       if (logoInputRef.current?.files?.[0]) {
@@ -279,6 +283,9 @@ export default function Admin() {
                   <input name="title" defaultValue={editingProject?.title} placeholder="Title" required className="p-2 border rounded w-full" />
                   <input name="location" defaultValue={editingProject?.location} placeholder="Location" required className="p-2 border rounded w-full" />
                   <input name="year" defaultValue={editingProject?.year} placeholder="Year" required className="p-2 border rounded w-full" />
+                  <input name="category" defaultValue={editingProject?.category} placeholder="Category (e.g. Residential)" className="p-2 border rounded w-full" />
+                  <input name="scale" defaultValue={editingProject?.scale} placeholder="Scale (e.g. 150 sqm)" className="p-2 border rounded w-full" />
+                  <input name="shortDescription" defaultValue={editingProject?.shortDescription} placeholder="Short Description (for Project Info)" className="p-2 border rounded w-full" />
                   <div className="md:col-span-2">
                     <label className="block text-xs font-bold uppercase tracking-widest mb-2">Upload Images</label>
                     <input 
@@ -626,6 +633,14 @@ export default function Admin() {
                   <div className="flex gap-2">
                     <input name="contactAddress" type="text" defaultValue={settings.contactAddress} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" required />
                     <input name="contactAddressFontSize" type="text" defaultValue={settings.contactAddressFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded focus:outline-none focus:border-black" />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Projects Page Title Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.projectsTitleFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input name="projectsTitleFontSize" type="text" defaultValue={settings.projectsTitleFontSize} placeholder="Size (e.g. 100%)" className="w-full p-3 border rounded focus:outline-none focus:border-black" />
                   </div>
                 </div>
               </div>

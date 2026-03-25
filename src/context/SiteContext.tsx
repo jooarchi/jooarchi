@@ -62,6 +62,7 @@ export interface Project {
   scale?: string;
   images: string[];
   description?: string;
+  shortDescription?: string;
   descriptionFontSize?: string;
 }
 
@@ -106,6 +107,7 @@ export interface SiteSettings {
   aboutClientsTextFontSize?: string;
   contactEmailFontSize?: string;
   contactAddressFontSize?: string;
+  projectsTitleFontSize?: string;
 }
 
 interface SiteContextType {
@@ -157,6 +159,7 @@ const DEFAULT_SETTINGS: SiteSettings = {
   aboutClientsTextFontSize: "100%",
   contactEmailFontSize: "100%",
   contactAddressFontSize: "100%",
+  projectsTitleFontSize: "100%",
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);
