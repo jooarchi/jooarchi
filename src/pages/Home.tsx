@@ -109,7 +109,7 @@ export default function Home() {
               e.currentTarget.src = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop";
             }}
           />
-          <h1 className="display-font text-lg md:text-2xl lg:text-3xl font-light tracking-[0.3em] uppercase text-center text-[#1a1a1a] opacity-80 mt-4">
+          <h1 className="display-font font-light tracking-[0.3em] uppercase text-center text-[#1a1a1a] opacity-80 mt-4" style={{ fontSize: settings.underConstructionFontSize }}>
             {settings.underConstructionText || "A space is waiting to be born"}
           </h1>
         </div>
@@ -148,20 +148,16 @@ export default function Home() {
       <section className="py-32 px-6 md:px-20 max-w-[1600px] mx-auto bg-[var(--c-bg)]">
         <div className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-start">
           <div className="lg:col-span-7">
-            <h2 className="display-font text-4xl md:text-6xl leading-[1.1] tracking-tight text-[#1a1a1a]">
-              <SplitText>We define the</SplitText>
+            <h2 className="display-font text-4xl md:text-6xl leading-[1.1] tracking-tight text-[#1a1a1a]" style={{ fontSize: settings.homeIntroTitleFontSize }}>
+              <SplitText>{settings.homeIntroTitle1 || "We define the"}</SplitText>
               <br />
-              <span className="text-gray-400"><SplitText>invisible lines</SplitText></span>
-              <SplitText> between</SplitText>
-              <br />
-              <SplitText>nature and structure.</SplitText>
+              <span className="text-gray-400"><SplitText>{settings.homeIntroTitleHighlight || "invisible lines"}</SplitText></span>
+              <SplitText>{` ${settings.homeIntroTitle2 || "between nature and structure."}`}</SplitText>
             </h2>
           </div>
           <div className="lg:col-span-5 flex flex-col justify-between h-full pt-2">
-            <div className="text-xl md:text-2xl font-light text-gray-600 leading-relaxed">
-              <SplitText>
-                {settings.homeIntroText}
-              </SplitText>
+            <div className="font-light text-gray-600 leading-relaxed" style={{ fontSize: settings.homeIntroFontSize }}>
+              <SplitText>{settings.homeIntroText}</SplitText>
             </div>
           </div>
         </div>
@@ -209,7 +205,7 @@ export default function Home() {
                     </p>
                   </div>
                   <div className="space-y-6">
-                    <p className="text-base text-gray-600 leading-relaxed font-light">
+                    <p className="text-gray-600 leading-relaxed font-light" style={{ fontSize: project.descriptionFontSize }}>
                       {project.description || 'A stunning architectural project.'}
                     </p>
                     <div className="flex gap-2">

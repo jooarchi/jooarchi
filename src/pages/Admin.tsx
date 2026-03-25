@@ -80,6 +80,7 @@ export default function Admin() {
         year: formData.get('year') as string,
         images: imageUrls,
         description: formData.get('description') as string,
+        descriptionFontSize: (formData.get('descriptionFontSize') as string) || '100%',
       };
 
       if (isAddingProject) {
@@ -121,7 +122,13 @@ export default function Admin() {
       const settingsData: Partial<SiteSettings> = {
         isUnderConstruction: formData.get('isUnderConstruction') === 'true',
         underConstructionText: formData.get('underConstructionText') as string,
+        underConstructionFontSize: formData.get('underConstructionFontSize') as string,
         homeIntroText: formData.get('homeIntroText') as string,
+        homeIntroFontSize: formData.get('homeIntroFontSize') as string,
+        homeIntroTitle1: formData.get('homeIntroTitle1') as string,
+        homeIntroTitleHighlight: formData.get('homeIntroTitleHighlight') as string,
+        homeIntroTitle2: formData.get('homeIntroTitle2') as string,
+        homeIntroTitleFontSize: formData.get('homeIntroTitleFontSize') as string,
       };
 
       if (ucInputRef.current?.files?.[0]) {
@@ -149,18 +156,31 @@ export default function Admin() {
       const formData = new FormData(e.currentTarget);
       const settingsData: Partial<SiteSettings> = {
         aboutText: formData.get('aboutText') as string,
+        aboutTextFontSize: formData.get('aboutTextFontSize') as string,
         aboutPhilosophyTitle: formData.get('aboutPhilosophyTitle') as string,
+        aboutPhilosophyTitleFontSize: formData.get('aboutPhilosophyTitleFontSize') as string,
         aboutPhilosophyText: formData.get('aboutPhilosophyText') as string,
+        aboutPhilosophyTextFontSize: formData.get('aboutPhilosophyTextFontSize') as string,
         aboutApproachText: formData.get('aboutApproachText') as string,
+        aboutApproachTextFontSize: formData.get('aboutApproachTextFontSize') as string,
         aboutPrincipalName: formData.get('aboutPrincipalName') as string,
+        aboutPrincipalNameFontSize: formData.get('aboutPrincipalNameFontSize') as string,
         aboutPrincipalTitle: formData.get('aboutPrincipalTitle') as string,
+        aboutPrincipalTitleFontSize: formData.get('aboutPrincipalTitleFontSize') as string,
         aboutPrincipalEducation: formData.get('aboutPrincipalEducation') as string,
+        aboutPrincipalEducationFontSize: formData.get('aboutPrincipalEducationFontSize') as string,
         aboutPrincipalCareer: formData.get('aboutPrincipalCareer') as string,
+        aboutPrincipalCareerFontSize: formData.get('aboutPrincipalCareerFontSize') as string,
         aboutPrincipalAwards: formData.get('aboutPrincipalAwards') as string,
+        aboutPrincipalAwardsFontSize: formData.get('aboutPrincipalAwardsFontSize') as string,
         aboutStudioInfo: formData.get('aboutStudioInfo') as string,
+        aboutStudioInfoFontSize: formData.get('aboutStudioInfoFontSize') as string,
         aboutClientsText: formData.get('aboutClientsText') as string,
+        aboutClientsTextFontSize: formData.get('aboutClientsTextFontSize') as string,
         contactEmail: formData.get('contactEmail') as string,
+        contactEmailFontSize: formData.get('contactEmailFontSize') as string,
         contactAddress: formData.get('contactAddress') as string,
+        contactAddressFontSize: formData.get('contactAddressFontSize') as string,
       };
 
       if (logoInputRef.current?.files?.[0]) {
@@ -295,7 +315,13 @@ export default function Admin() {
                   </div>
                 )}
 
-                <textarea name="description" defaultValue={editingProject?.description} placeholder="Description" rows={4} className="p-2 border rounded w-full"></textarea>
+                    <div className="flex gap-2">
+                      <textarea name="description" defaultValue={editingProject?.description} placeholder="Description" rows={4} className="flex-1 p-2 border rounded"></textarea>
+                      <div className="flex flex-col gap-1">
+                        <input name="descriptionFontSize" defaultValue={editingProject?.descriptionFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-2 border rounded" />
+                        <span className="text-[10px] text-gray-400">Current: {editingProject?.descriptionFontSize || '100%'}</span>
+                      </div>
+                    </div>
                 <div className="flex gap-2">
                   <button 
                     type="submit" 
@@ -362,13 +388,24 @@ export default function Admin() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Main Text</label>
-                    <input 
-                      name="underConstructionText" 
-                      type="text" 
-                      defaultValue={settings.underConstructionText} 
-                      className="w-full p-3 border rounded focus:outline-none focus:border-black" 
-                    />
+                    <label className="block text-sm font-medium mb-2">
+                      Main Text & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.underConstructionFontSize})</span>
+                    </label>
+                    <div className="flex gap-2">
+                      <input 
+                        name="underConstructionText" 
+                        type="text" 
+                        defaultValue={settings.underConstructionText} 
+                        className="flex-1 p-3 border rounded focus:outline-none focus:border-black" 
+                      />
+                      <input 
+                        name="underConstructionFontSize" 
+                        type="text" 
+                        defaultValue={settings.underConstructionFontSize} 
+                        placeholder="Size (e.g. 100%)"
+                        className="w-32 p-3 border rounded focus:outline-none focus:border-black" 
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -391,8 +428,32 @@ export default function Admin() {
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Home Intro Text</label>
-                    <textarea name="homeIntroText" defaultValue={settings.homeIntroText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                    <label className="block text-sm font-medium mb-2">
+                      Home Intro Title & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.homeIntroTitleFontSize})</span>
+                    </label>
+                    <div className="space-y-2">
+                      <div className="flex gap-2">
+                        <input name="homeIntroTitle1" defaultValue={settings.homeIntroTitle1} placeholder="Part 1 (e.g. We define the)" className="flex-1 p-3 border rounded focus:outline-none focus:border-black" />
+                        <input name="homeIntroTitleFontSize" defaultValue={settings.homeIntroTitleFontSize} placeholder="Size (e.g. 100%)" className="w-32 p-3 border rounded focus:outline-none focus:border-black" />
+                      </div>
+                      <input name="homeIntroTitleHighlight" defaultValue={settings.homeIntroTitleHighlight} placeholder="Highlight (e.g. invisible lines)" className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                      <input name="homeIntroTitle2" defaultValue={settings.homeIntroTitle2} placeholder="Part 2 (e.g. between nature and structure.)" className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium mb-2">
+                      Home Intro Text & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.homeIntroFontSize})</span>
+                    </label>
+                    <div className="flex gap-2">
+                      <textarea name="homeIntroText" defaultValue={settings.homeIntroText} rows={3} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                      <input 
+                        name="homeIntroFontSize" 
+                        type="text" 
+                        defaultValue={settings.homeIntroFontSize} 
+                        placeholder="Size (e.g. 100%)"
+                        className="w-32 p-3 border rounded self-start focus:outline-none focus:border-black" 
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -444,57 +505,128 @@ export default function Admin() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">About Intro Text</label>
-                <textarea name="aboutText" defaultValue={settings.aboutText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                <label className="block text-sm font-medium mb-2">
+                  About Intro Text & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutTextFontSize})</span>
+                </label>
+                <div className="flex gap-2">
+                  <textarea name="aboutText" defaultValue={settings.aboutText} rows={3} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" required></textarea>
+                  <input 
+                    name="aboutTextFontSize" 
+                    type="text" 
+                    defaultValue={settings.aboutTextFontSize} 
+                    placeholder="Size (e.g. 100%)"
+                    className="w-32 p-3 border rounded self-start focus:outline-none focus:border-black" 
+                  />
+                </div>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium mb-2">Philosophy Title</label>
-                  <input name="aboutPhilosophyTitle" type="text" defaultValue={settings.aboutPhilosophyTitle} className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                  <label className="block text-sm font-medium mb-2">
+                    Philosophy Title & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutPhilosophyTitleFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input name="aboutPhilosophyTitle" type="text" defaultValue={settings.aboutPhilosophyTitle} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" />
+                    <input name="aboutPhilosophyTitleFontSize" type="text" defaultValue={settings.aboutPhilosophyTitleFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Philosophy Text</label>
-                  <textarea name="aboutPhilosophyText" defaultValue={settings.aboutPhilosophyText} rows={5} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                  <label className="block text-sm font-medium mb-2">
+                    Philosophy Text & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutPhilosophyTextFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea name="aboutPhilosophyText" defaultValue={settings.aboutPhilosophyText} rows={5} className="flex-1 p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                    <input name="aboutPhilosophyTextFontSize" type="text" defaultValue={settings.aboutPhilosophyTextFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded self-start focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Approach Text</label>
-                  <textarea name="aboutApproachText" defaultValue={settings.aboutApproachText} rows={5} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                  <label className="block text-sm font-medium mb-2">
+                    Approach Text & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutApproachTextFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea name="aboutApproachText" defaultValue={settings.aboutApproachText} rows={5} className="flex-1 p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                    <input name="aboutApproachTextFontSize" type="text" defaultValue={settings.aboutApproachTextFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded self-start focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Principal Name</label>
-                  <input name="aboutPrincipalName" type="text" defaultValue={settings.aboutPrincipalName} className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                  <label className="block text-sm font-medium mb-2">
+                    Principal Name & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutPrincipalNameFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input name="aboutPrincipalName" type="text" defaultValue={settings.aboutPrincipalName} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" />
+                    <input name="aboutPrincipalNameFontSize" type="text" defaultValue={settings.aboutPrincipalNameFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Principal Title</label>
-                  <input name="aboutPrincipalTitle" type="text" defaultValue={settings.aboutPrincipalTitle} className="w-full p-3 border rounded focus:outline-none focus:border-black" />
+                  <label className="block text-sm font-medium mb-2">
+                    Principal Title & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutPrincipalTitleFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input name="aboutPrincipalTitle" type="text" defaultValue={settings.aboutPrincipalTitle} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" />
+                    <input name="aboutPrincipalTitleFontSize" type="text" defaultValue={settings.aboutPrincipalTitleFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Principal Education</label>
-                  <textarea name="aboutPrincipalEducation" defaultValue={settings.aboutPrincipalEducation} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                  <label className="block text-sm font-medium mb-2">
+                    Principal Education & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutPrincipalEducationFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea name="aboutPrincipalEducation" defaultValue={settings.aboutPrincipalEducation} rows={3} className="flex-1 p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                    <input name="aboutPrincipalEducationFontSize" type="text" defaultValue={settings.aboutPrincipalEducationFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded self-start focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Principal Career</label>
-                  <textarea name="aboutPrincipalCareer" defaultValue={settings.aboutPrincipalCareer} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                  <label className="block text-sm font-medium mb-2">
+                    Principal Career & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutPrincipalCareerFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea name="aboutPrincipalCareer" defaultValue={settings.aboutPrincipalCareer} rows={3} className="flex-1 p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                    <input name="aboutPrincipalCareerFontSize" type="text" defaultValue={settings.aboutPrincipalCareerFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded self-start focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Principal Awards</label>
-                  <textarea name="aboutPrincipalAwards" defaultValue={settings.aboutPrincipalAwards} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                  <label className="block text-sm font-medium mb-2">
+                    Principal Awards & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutPrincipalAwardsFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea name="aboutPrincipalAwards" defaultValue={settings.aboutPrincipalAwards} rows={3} className="flex-1 p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                    <input name="aboutPrincipalAwardsFontSize" type="text" defaultValue={settings.aboutPrincipalAwardsFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded self-start focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Studio Info</label>
-                  <textarea name="aboutStudioInfo" defaultValue={settings.aboutStudioInfo} rows={4} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                  <label className="block text-sm font-medium mb-2">
+                    Studio Info & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutStudioInfoFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea name="aboutStudioInfo" defaultValue={settings.aboutStudioInfo} rows={4} className="flex-1 p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                    <input name="aboutStudioInfoFontSize" type="text" defaultValue={settings.aboutStudioInfoFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded self-start focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Clients & Collaborators</label>
-                  <textarea name="aboutClientsText" defaultValue={settings.aboutClientsText} rows={3} className="w-full p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                  <label className="block text-sm font-medium mb-2">
+                    Clients & Collaborators & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.aboutClientsTextFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <textarea name="aboutClientsText" defaultValue={settings.aboutClientsText} rows={3} className="flex-1 p-3 border rounded focus:outline-none focus:border-black"></textarea>
+                    <input name="aboutClientsTextFontSize" type="text" defaultValue={settings.aboutClientsTextFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded self-start focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Contact Email</label>
-                  <input name="contactEmail" type="email" defaultValue={settings.contactEmail} className="w-full p-3 border rounded focus:outline-none focus:border-black" required />
+                  <label className="block text-sm font-medium mb-2">
+                    Contact Email & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.contactEmailFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input name="contactEmail" type="email" defaultValue={settings.contactEmail} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" required />
+                    <input name="contactEmailFontSize" type="text" defaultValue={settings.contactEmailFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded focus:outline-none focus:border-black" />
+                  </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Contact Address</label>
-                  <input name="contactAddress" type="text" defaultValue={settings.contactAddress} className="w-full p-3 border rounded focus:outline-none focus:border-black" required />
+                  <label className="block text-sm font-medium mb-2">
+                    Contact Address & Size <span className="text-xs font-normal text-gray-400 ml-1">(Current: {settings.contactAddressFontSize})</span>
+                  </label>
+                  <div className="flex gap-2">
+                    <input name="contactAddress" type="text" defaultValue={settings.contactAddress} className="flex-1 p-3 border rounded focus:outline-none focus:border-black" required />
+                    <input name="contactAddressFontSize" type="text" defaultValue={settings.contactAddressFontSize} placeholder="Size (e.g. 100%)" className="w-24 p-3 border rounded focus:outline-none focus:border-black" />
+                  </div>
                 </div>
               </div>
               <button 

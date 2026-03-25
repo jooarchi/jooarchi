@@ -62,6 +62,7 @@ export interface Project {
   scale?: string;
   images: string[];
   description?: string;
+  descriptionFontSize?: string;
 }
 
 export interface SiteSettings {
@@ -79,12 +80,32 @@ export interface SiteSettings {
   contactEmail: string;
   contactAddress: string;
   homeIntroText: string;
+  homeIntroTitle1?: string;
+  homeIntroTitleHighlight?: string;
+  homeIntroTitle2?: string;
   isUnderConstruction: boolean;
   underConstructionImage: string;
   underConstructionText: string;
   logoImage?: string;
   homeHeroImage?: string;
   aboutImage?: string;
+  // Font sizes
+  homeIntroFontSize?: string;
+  homeIntroTitleFontSize?: string;
+  underConstructionFontSize?: string;
+  aboutTextFontSize?: string;
+  aboutPhilosophyTitleFontSize?: string;
+  aboutPhilosophyTextFontSize?: string;
+  aboutApproachTextFontSize?: string;
+  aboutPrincipalNameFontSize?: string;
+  aboutPrincipalTitleFontSize?: string;
+  aboutPrincipalEducationFontSize?: string;
+  aboutPrincipalCareerFontSize?: string;
+  aboutPrincipalAwardsFontSize?: string;
+  aboutStudioInfoFontSize?: string;
+  aboutClientsTextFontSize?: string;
+  contactEmailFontSize?: string;
+  contactAddressFontSize?: string;
 }
 
 interface SiteContextType {
@@ -110,13 +131,32 @@ const DEFAULT_SETTINGS: SiteSettings = {
   aboutClientsText: "Developers, Private Clients, Public Institutions, Construction Partners, Cultural Foundations, Tech Companies",
   contactEmail: "studio@jooarchi.com",
   contactAddress: "Oslo, Norway / New York, USA",
+  homeIntroTitle1: "We define the",
+  homeIntroTitleHighlight: "invisible lines",
+  homeIntroTitle2: "between nature and structure.",
   homeIntroText: "JOOARCHI Architectural Studio believes that the most profound architecture is often the quietest. We strip away the unnecessary to reveal the essential truth of a space, crafting environments that breathe.",
   isUnderConstruction: true,
   underConstructionImage: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2000&auto=format&fit=crop",
   underConstructionText: "A space is waiting to be born",
   logoImage: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/7523f66c-5e45-422f-8700-669533359d9c_1024w.webp",
   homeHeroImage: "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/482e7b6a-168c-4d0d-b35d-0e2ff4014577_3840w.webp",
-  aboutImage: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=2000&auto=format&fit=crop"
+  aboutImage: "https://images.unsplash.com/photo-1487958449943-2429e8be8625?q=80&w=2000&auto=format&fit=crop",
+  homeIntroFontSize: "100%",
+  homeIntroTitleFontSize: "100%",
+  underConstructionFontSize: "100%",
+  aboutTextFontSize: "100%",
+  aboutPhilosophyTitleFontSize: "100%",
+  aboutPhilosophyTextFontSize: "100%",
+  aboutApproachTextFontSize: "100%",
+  aboutPrincipalNameFontSize: "100%",
+  aboutPrincipalTitleFontSize: "100%",
+  aboutPrincipalEducationFontSize: "100%",
+  aboutPrincipalCareerFontSize: "100%",
+  aboutPrincipalAwardsFontSize: "100%",
+  aboutStudioInfoFontSize: "100%",
+  aboutClientsTextFontSize: "100%",
+  contactEmailFontSize: "100%",
+  contactAddressFontSize: "100%",
 };
 
 const SiteContext = createContext<SiteContextType | undefined>(undefined);

@@ -66,14 +66,14 @@ export default function Contact() {
             <div>
               <h3 className="text-xs uppercase tracking-widest text-gray-400 mb-4 font-medium">Office</h3>
               <p className="text-lg font-medium">JOOARCHI</p>
-              <p className="text-gray-600 font-light mt-2 whitespace-pre-line">
+              <p className="text-gray-600 font-light mt-2 whitespace-pre-line" style={{ fontSize: settings.contactAddressFontSize }}>
                 {settings.contactAddress}
               </p>
             </div>
             
             <div>
               <h3 className="text-xs uppercase tracking-widest text-gray-400 mb-4 font-medium">Inquiries</h3>
-              <a href={`mailto:${settings.contactEmail}`} className="block text-lg font-medium hover:text-gray-600 transition-colors">{settings.contactEmail}</a>
+              <a href={`mailto:${settings.contactEmail}`} className="block font-medium hover:text-gray-600 transition-colors" style={{ fontSize: settings.contactEmailFontSize }}>{settings.contactEmail}</a>
             </div>
           </div>
         </div>

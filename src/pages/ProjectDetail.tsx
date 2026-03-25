@@ -64,7 +64,7 @@ export default function ProjectDetail() {
           {/* Design Concept */}
           <div className="col-span-1 md:col-span-3 md:pl-12">
             <h2 className="display-font text-3xl md:text-4xl font-medium tracking-tight mb-12">Design Concept</h2>
-            <p className="text-gray-600 font-light leading-relaxed whitespace-pre-line text-lg">
+            <p className="text-gray-600 font-light leading-relaxed whitespace-pre-line" style={{ fontSize: project.descriptionFontSize }}>
               {project.description || 'No description available for this project.'}
             </p>
           </div>
