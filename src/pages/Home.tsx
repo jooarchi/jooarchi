@@ -217,7 +217,7 @@ export default function Home() {
                 <div className="card-img-wrap flex items-center justify-center bg-gray-50">
                   <img 
                     src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} 
-                    className="card-img md:w-[70%] md:h-[70%]" 
+                    className="card-img md:w-[60%] md:h-[60%]" 
                     alt={project.title} 
                   />
                 </div>
