@@ -16,11 +16,11 @@ export default function Projects() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
           {projects.map((project) => (
             <Link key={project.id} to={`/projects/${project.id}`} className="group block">
-              <div className="relative aspect-[4/5] overflow-hidden mb-6 bg-gray-100 rounded-lg">
+              <div className="relative aspect-[4/5] overflow-hidden mb-6 bg-gray-100 rounded-lg flex items-center justify-center">
                 <img 
                   src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} 
                   alt={project.title} 
-                  className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
+                  className="w-full h-full md:w-[70%] md:h-[70%] object-contain transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
               <div>

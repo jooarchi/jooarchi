@@ -27,11 +27,11 @@ export default function ProjectDetail() {
   return (
     <div className="min-h-screen bg-[var(--c-bg)]">
       {/* Hero Image */}
-      <section className="h-[80vh] md:h-screen relative bg-black">
+      <section className="h-[80vh] md:h-screen relative bg-black flex items-center justify-center">
         <img 
           src={project.images[0] || 'https://picsum.photos/seed/placeholder/1920/1080'} 
           alt={project.title} 
-          className="w-full h-full object-contain"
+          className="w-full h-full md:w-[70%] md:h-[70%] object-contain"
         />
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute bottom-12 left-6 md:left-12 text-white">
@@ -76,7 +76,7 @@ export default function ProjectDetail() {
         <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-24">
           <div className="flex flex-col gap-12">
             {project.images.slice(1).map((img, index) => (
-              <div key={index} className="overflow-hidden rounded-lg w-full">
+              <div key={index} className="overflow-hidden rounded-lg w-full md:w-[70%] mx-auto">
                 <img 
                   src={img} 
                   alt={`${project.title} - ${index + 2}`} 
