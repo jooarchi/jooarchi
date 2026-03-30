@@ -143,9 +143,13 @@ body {
 
 @media (max-width: 1024px) {
   .card-inner { grid-template-columns: 1fr; }
-  .card-content { border-right: none; border-bottom: 1px solid var(--c-border); padding: 2rem; order: 2; height: 40%; }
-  .card-img-wrap { height: 60%; order: 1; }
-  .card-item { height: 75vh; top: 10vh; }
+  .card-content { border-right: none; border-bottom: 1px solid var(--c-border); padding: 1rem; order: 2; height: 35%; }
+  .card-img-wrap { height: 65%; order: 1; }
+  .card-img { object-fit: cover !important; }
+  .card-item { height: 80vh; top: 10vh; }
+  .card-content h3 { font-size: 1.1rem !important; margin-top: 0.15rem !important; }
+  .card-content p { font-size: 0.75rem !important; line-height: 1.2 !important; }
+  .card-content .flex.gap-2 { margin-top: 0.25rem !important; }
 }
 
 .footer-sticky {

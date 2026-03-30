@@ -22,7 +22,7 @@ const SplitText = ({ children, className = '' }: { children: string, className?:
 
 export default function Home() {
   const { projects, settings } = useSiteContext();
-  const featuredProjects = projects.slice(0, 1); // Get only the most recent project
+  const featuredProjects = projects.slice(0, 2); // Get top 2 projects
 
   const isUnderConstruction = settings.isUnderConstruction;
 
@@ -171,7 +171,7 @@ export default function Home() {
               <div className="w-2 h-2 rounded-full bg-black"></div>
               <span className="text-sm font-medium uppercase tracking-widest text-gray-500">Selected Works</span>
             </div>
-            <h2 className="display-font text-4xl md:text-5xl font-medium tracking-tight">
+            <h2 className="display-font text-3xl md:text-5xl font-medium tracking-tight">
               FEATURED
               <br />
               PROJECTS
@@ -197,15 +197,15 @@ export default function Home() {
                         <ArrowUpRight strokeWidth={1.5} className="w-4 h-4 text-gray-800" />
                       </span>
                     </div>
-                    <h3 className="display-font text-2xl md:text-3xl font-medium tracking-tight mt-6">
+                    <h3 className="display-font text-xl md:text-3xl font-medium tracking-tight mt-4 md:mt-6">
                       {project.title}
                     </h3>
-                    <p className="text-sm text-gray-400 uppercase tracking-widest mt-2">
+                    <p className="text-xs md:text-sm text-gray-400 uppercase tracking-widest mt-2">
                       {project.location}
                     </p>
                   </div>
-                  <div className="space-y-6 mt-6">
-                    <p className="text-gray-600 leading-relaxed font-light" style={{ fontSize: project.descriptionFontSize }}>
+                  <div className="space-y-4 md:space-y-6 mt-4 md:mt-6">
+                    <p className="text-gray-600 leading-relaxed font-light line-clamp-2 md:line-clamp-none" style={{ fontSize: project.descriptionFontSize }}>
                       {project.description || 'A stunning architectural project.'}
                     </p>
                     <div className="flex gap-2">
