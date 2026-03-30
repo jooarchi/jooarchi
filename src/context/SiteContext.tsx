@@ -59,6 +59,7 @@ export interface Project {
   location: string;
   year: string;
   category?: string;
+  projectType?: string;
   scale?: string;
   images: string[];
   description?: string;

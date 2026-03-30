@@ -70,10 +70,12 @@ export default function ProjectDetail() {
                   <span className="font-medium">{project.scale}</span>
                 </li>
               )}
-              <li className="flex flex-col border-b border-black/5 pb-2">
-                <span className="text-gray-500 mb-1">Description</span>
-                <span className="font-light text-xs text-gray-600 line-clamp-4">{project.shortDescription || project.description || 'No description available.'}</span>
-              </li>
+              {project.projectType && (
+                <li className="flex justify-between border-b border-black/5 pb-2">
+                  <span className="text-gray-500">Project Type</span>
+                  <span className="font-medium">{project.projectType}</span>
+                </li>
+              )}
             </ul>
           </div>
 

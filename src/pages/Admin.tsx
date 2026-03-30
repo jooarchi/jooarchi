@@ -79,6 +79,7 @@ export default function Admin() {
         location: formData.get('location') as string,
         year: formData.get('year') as string,
         category: formData.get('category') as string,
+        projectType: formData.get('projectType') as string,
         scale: formData.get('scale') as string,
         shortDescription: formData.get('shortDescription') as string,
         images: imageUrls,
@@ -284,6 +285,7 @@ export default function Admin() {
                   <input name="location" defaultValue={editingProject?.location} placeholder="Location" required className="p-2 border rounded w-full" />
                   <input name="year" defaultValue={editingProject?.year} placeholder="Year" required className="p-2 border rounded w-full" />
                   <input name="category" defaultValue={editingProject?.category} placeholder="Category (e.g. Residential)" className="p-2 border rounded w-full" />
+                  <input name="projectType" defaultValue={editingProject?.projectType} placeholder="Project Type" className="p-2 border rounded w-full" />
                   <input name="scale" defaultValue={editingProject?.scale} placeholder="Scale (e.g. 150 sqm)" className="p-2 border rounded w-full" />
                   <input name="shortDescription" defaultValue={editingProject?.shortDescription} placeholder="Short Description (for Project Info)" className="p-2 border rounded w-full" />
                   <div className="md:col-span-2">
@@ -348,7 +350,7 @@ export default function Admin() {
                   <div>
                     <img src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} alt={project.title} className="w-full h-40 object-cover mb-4 rounded" />
                     <h3 className="font-medium">{project.title}</h3>
-                    <p className="text-xs text-gray-500 mb-4">{project.category} • {project.year}</p>
+                    <p className="text-xs text-gray-500 mb-4">{project.category} • {project.year} {project.projectType ? `• ${project.projectType}` : ''}</p>
                   </div>
                   <div className="flex gap-2">
                     <button onClick={() => setEditingProject(project)} className="text-xs underline text-blue-600">Edit</button>

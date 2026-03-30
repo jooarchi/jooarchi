@@ -10,6 +10,7 @@
         "location": { "type": "string" },
         "year": { "type": "string" },
         "category": { "type": "string" },
+        "projectType": { "type": "string" },
         "scale": { "type": "string" },
         "images": {
           "type": "array",

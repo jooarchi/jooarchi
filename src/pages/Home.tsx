@@ -22,7 +22,7 @@ const SplitText = ({ children, className = '' }: { children: string, className?:
 
 export default function Home() {
   const { projects, settings } = useSiteContext();
-  const featuredProjects = projects.slice(0, 3); // Get first 3 projects
+  const featuredProjects = projects.slice(0, 1); // Get only the most recent project
 
   const isUnderConstruction = settings.isUnderConstruction;
 
@@ -120,11 +120,11 @@ export default function Home() {
   return (
     <div className="bg-[var(--c-bg)]">
       {/* HERO */}
-      <section className="h-screen relative flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 w-full h-full hero-img-wrap">
+      <section className="h-[70vh] md:h-screen relative flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 w-full h-full hero-img-wrap bg-black">
           <img 
             src={settings.homeHeroImage || "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/482e7b6a-168c-4d0d-b35d-0e2ff4014577_3840w.webp"} 
-            className="w-full h-[120%] object-cover brightness-[0.6] hero-img" 
+            className="w-full h-full object-contain md:object-cover md:h-[120%] brightness-[0.6] hero-img" 
             alt="Hero Architecture" 
             referrerPolicy="no-referrer"
           />
@@ -204,20 +204,23 @@ export default function Home() {
                       {project.location}
                     </p>
                   </div>
-                  <div className="space-y-6">
+                  <div className="space-y-6 mt-6">
                     <p className="text-gray-600 leading-relaxed font-light" style={{ fontSize: project.descriptionFontSize }}>
                       {project.description || 'A stunning architectural project.'}
                     </p>
                     <div className="flex gap-2">
                       <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">{project.category}</span>
                       <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">{project.year}</span>
+                      {project.projectType && (
+                        <span className="px-3 py-1 bg-gray-100 rounded-full text-xs uppercase tracking-wider text-gray-600">{project.projectType}</span>
+                      )}
                     </div>
                   </div>
                 </div>
                 <div className="card-img-wrap flex items-center justify-center bg-gray-50">
                   <img 
                     src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} 
-                    className="card-img md:w-[60%] md:h-[60%]" 
+                    className="card-img w-full h-full md:w-[60%] md:h-[60%]" 
                     alt={project.title} 
                   />
                 </div>

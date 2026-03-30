@@ -143,9 +143,9 @@ body {
 
 @media (max-width: 1024px) {
   .card-inner { grid-template-columns: 1fr; }
-  .card-content { border-right: none; border-bottom: 1px solid var(--c-border); padding: 2rem; order: 2; height: 45%; }
-  .card-img-wrap { height: 55%; order: 1; }
-  .card-item { height: 85vh; top: 5vh; }
+  .card-content { border-right: none; border-bottom: 1px solid var(--c-border); padding: 2rem; order: 2; height: 40%; }
+  .card-img-wrap { height: 60%; order: 1; }
+  .card-item { height: 75vh; top: 10vh; }
 }
 
 .footer-sticky {

@@ -30,6 +30,12 @@ export default function Projects() {
                 </div>
                 <div className="flex justify-between items-end text-sm text-gray-500">
                   <span className="uppercase tracking-widest text-xs">{project.location}</span>
+                  <div className="flex gap-2">
+                    <span className="text-[10px] uppercase tracking-wider text-gray-400">{project.category}</span>
+                    {project.projectType && (
+                      <span className="text-[10px] uppercase tracking-wider text-gray-400">{project.projectType}</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </Link>
