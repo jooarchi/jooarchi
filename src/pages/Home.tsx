@@ -23,6 +23,15 @@ const SplitText = ({ children, className = '' }: { children: string, className?:
 export default function Home() {
   const { projects, settings } = useSiteContext();
   const featuredProjects = projects.slice(0, 2); // Get top 2 projects
+  const [imageOrientations, setImageOrientations] = React.useState<{[key: number]: 'portrait' | 'landscape'}>({});
+
+  const handleImageLoad = (id: number, e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    setImageOrientations(prev => ({
+      ...prev,
+      [id]: naturalHeight > naturalWidth ? 'portrait' : 'landscape'
+    }));
+  };
 
   const isUnderConstruction = settings.isUnderConstruction;
 
@@ -220,7 +229,12 @@ export default function Home() {
                 <div className="card-img-wrap flex items-center justify-center bg-gray-50">
                   <img 
                     src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} 
-                    className="card-img w-full h-full md:w-[60%] md:h-[60%]" 
+                    onLoad={(e) => handleImageLoad(project.id, e)}
+                    className={`card-img transition-all duration-700 ${
+                      imageOrientations[project.id] === 'portrait' 
+                        ? 'w-auto h-[85%] md:h-[75%] object-contain' 
+                        : 'w-full h-full md:w-[60%] md:h-[60%] object-cover md:object-contain'
+                    }`} 
                     alt={project.title} 
                   />
                 </div>

@@ -7,6 +7,15 @@ export default function ProjectDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { projects } = useSiteContext();
+  const [galleryOrientations, setGalleryOrientations] = React.useState<{[key: number]: 'portrait' | 'landscape'}>({});
+
+  const handleGalleryImageLoad = (index: number, e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    setGalleryOrientations(prev => ({
+      ...prev,
+      [index]: naturalHeight > naturalWidth ? 'portrait' : 'landscape'
+    }));
+  };
   
   const projectIndex = projects.findIndex(p => p.id === Number(id));
   const project = projects[projectIndex];
@@ -94,9 +103,12 @@ export default function ProjectDetail() {
         <section className="px-6 md:px-12 max-w-[1600px] mx-auto pb-24">
           <div className="flex flex-col gap-12">
             {project.images.slice(1).map((img, index) => (
-              <div key={index} className="overflow-hidden rounded-lg w-full md:w-[60%] mx-auto">
+              <div key={index} className={`overflow-hidden rounded-lg mx-auto transition-all duration-700 ${
+                galleryOrientations[index] === 'portrait' ? 'w-[70%] md:w-[35%]' : 'w-full md:w-[60%]'
+              }`}>
                 <img 
                   src={img} 
+                  onLoad={(e) => handleGalleryImageLoad(index, e)}
                   alt={`${project.title} - ${index + 2}`} 
                   className="w-full h-auto hover:scale-105 transition-transform duration-700"
                 />

@@ -4,6 +4,15 @@ import { useSiteContext } from '../context/SiteContext';
 
 export default function Projects() {
   const { projects, settings } = useSiteContext();
+  const [imageOrientations, setImageOrientations] = React.useState<{[key: number]: 'portrait' | 'landscape'}>({});
+
+  const handleImageLoad = (id: number, e: React.SyntheticEvent<HTMLImageElement>) => {
+    const { naturalWidth, naturalHeight } = e.currentTarget;
+    setImageOrientations(prev => ({
+      ...prev,
+      [id]: naturalHeight > naturalWidth ? 'portrait' : 'landscape'
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-[var(--c-bg)] pt-32 pb-24">
@@ -19,8 +28,13 @@ export default function Projects() {
               <div className="relative aspect-[4/5] overflow-hidden mb-6 bg-gray-100 rounded-lg flex items-center justify-center">
                 <img 
                   src={project.images[0] || 'https://picsum.photos/seed/placeholder/800/600'} 
+                  onLoad={(e) => handleImageLoad(project.id, e)}
                   alt={project.title} 
-                  className="w-full h-full md:w-[60%] md:h-[60%] object-contain transition-transform duration-700 group-hover:scale-105"
+                  className={`transition-transform duration-700 group-hover:scale-105 ${
+                    imageOrientations[project.id] === 'portrait' 
+                      ? 'h-[85%] w-auto object-contain' 
+                      : 'w-full h-full md:w-[60%] md:h-[60%] object-contain'
+                  }`}
                 />
               </div>
               <div>
